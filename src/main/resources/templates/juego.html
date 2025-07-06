@@ -34,6 +34,9 @@
 <h1>Bienvenido, <span th:text="${usuario.username}">Jugador</span> 🐍</h1>
 <p>¡Juega y supera tu propio récord!</p>
 
+<!-- Justo antes del canvas o el botón de iniciar juego -->
+<div id="joystick-zone" style="width:100px; height:100px; margin: 20px auto; display: none;"></div>
+
 <canvas id="gameCanvas" width="400" height="400"></canvas>
 <p id="puntaje">Puntaje: 0</p>
 
@@ -49,6 +52,9 @@
         Empezar partida ▶️
     </button>
 </div>
+
+<!-- Carga la librería nippleJS (puede ir antes de tu script final) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.9.0/nipplejs.min.js"></script>
 
 <script>
     // --- Snake Game ---
@@ -142,6 +148,35 @@
         intervalo = setInterval(draw, 150);
       }
     }
+
+    // Detectar si es móvil
+    const esMovil = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    if (esMovil) {
+      // Mostrar zona del joystick
+      document.getElementById("joystick-zone").style.display = "block";
+
+      // Crear joystick
+      const joystick = nipplejs.create({
+        zone: document.getElementById('joystick-zone'),
+        mode: 'static',
+        position: { left: '50%', top: '80%' },
+        color: 'green'
+      });
+
+      joystick.on('dir', (evt, data) => {
+        const dirMap = {
+          up: 'UP',
+          down: 'DOWN',
+          left: 'LEFT',
+          right: 'RIGHT'
+        };
+        if (data && data.direction && dirMap[data.direction.angle]) {
+          direction = dirMap[data.direction.angle];
+        }
+      });
+    }
+
 
 </script>
 </body>
