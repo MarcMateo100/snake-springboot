@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio de sesión | Snake Game</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f0f8ff;
+            text-align: center;
+            padding-top: 80px;
+        }
+        form {
+            display: inline-block;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+        input[type=text], input[type=password] {
+            width: 220px;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type=submit] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        p.error {
+            color: red;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Bienvenido al juego de la serpiente 🐍</h1>
+
+<form th:action="@{/login}" method="post">
+    <div>
+        <label for="username">Usuario:</label><br>
+        <input type="text" id="username" name="username" required>
+    </div>
+
+    <div>
+        <label for="password">Contraseña:</label><br>
+        <input type="password" id="password" name="password" required>
+    </div>
+
+    <div>
+        <input type="submit" value="Entrar al juego">
+    </div>
+
+    <p th:if="${error}" th:text="${error}" class="error"></p>
+</form>
+
+<p><a th:href="@{/registro}">¿No tienes cuenta? Regístrate aquí</a></p>
+
+
+</body>
+</html>

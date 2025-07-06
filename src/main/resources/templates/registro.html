@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro Snake</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; background-color: #eef; padding-top: 50px; }
+        form { background: #fff; padding: 30px; border-radius: 8px; display: inline-block; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); }
+        input { margin: 10px 0; padding: 8px; width: 220px; }
+        input[type=submit] { background-color: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+
+<nav style="background-color: #333; padding: 10px;">
+    <div style="display: flex; justify-content: center; gap: 30px;">
+        <a th:href="@{/juego}" style="color: white; text-decoration: none; font-weight: bold;">🐍 Juego</a>
+        <a th:href="@{/ranking}" style="color: white; text-decoration: none; font-weight: bold;">🏆 Ranking</a>
+        <a th:href="@{/logout}" style="color: white; text-decoration: none; font-weight: bold;">🔒 Cerrar sesión</a>
+    </div>
+</nav>
+
+
+<h2>📝 Crear nueva cuenta</h2>
+
+<form th:action="@{/registro}" method="post">
+    <div>
+        <input type="text" name="username" placeholder="Usuario" required>
+    </div>
+    <div>
+        <input type="password" name="password" placeholder="Contraseña" required>
+    </div>
+    <div>
+        <input type="submit" value="Registrarse">
+    </div>
+    <p th:if="${error}" th:text="${error}" class="error"></p>
+    <p th:if="${mensaje}" th:text="${mensaje}" style="color:green;"></p>
+</form>
+
+<p th:if="${error}" th:text="${error}" class="error"></p>
+
+</body>
+</html>

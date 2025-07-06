@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Juego Snake</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+          font-family: sans-serif;
+          text-align: center;
+          background-color: #e6f2ff;
+        }
+        canvas {
+          border: 2px solid #333;
+          background-color: #000;
+          margin-top: 20px;
+        }
+        #puntaje {
+          font-size: 18px;
+          margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<nav style="background-color: #333; padding: 10px;">
+    <div style="display: flex; justify-content: center; gap: 30px;">
+        <a th:href="@{/juego}" style="color: white; text-decoration: none; font-weight: bold;">🐍 Juego</a>
+        <a th:href="@{/ranking}" style="color: white; text-decoration: none; font-weight: bold;">🏆 Ranking</a>
+        <a th:href="@{/logout}" style="color: white; text-decoration: none; font-weight: bold;">🔒 Cerrar sesión</a>
+    </div>
+</nav>
+
+<h1>Bienvenido, <span th:text="${usuario.username}">Jugador</span> 🐍</h1>
+<p>¡Juega y supera tu propio récord!</p>
+
+<canvas id="gameCanvas" width="400" height="400"></canvas>
+<p id="puntaje">Puntaje: 0</p>
+
+<div style="margin-top: 20px;">
+    <button onclick="iniciarJuego()" style="
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 25px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;">
+        Empezar partida ▶️
+    </button>
+</div>
+
+<script>
+    // --- Snake Game ---
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let snake = [{ x: 200, y: 200 }];
+    let direction = "RIGHT";
+    let food = { x: 100, y: 100 };
+    let score = 0;
+    let username = "[[${#strings.escapeJavaScript(usuario.username)}]]";
+
+    document.addEventListener("keydown", e => {
+      const dir = { ArrowUp: "UP", ArrowDown: "DOWN", ArrowLeft: "LEFT", ArrowRight: "RIGHT" };
+      if (dir[e.key]) direction = dir[e.key];
+    });
+
+    function draw() {
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Comida
+      ctx.fillStyle = "red";
+      ctx.fillRect(food.x, food.y, 20, 20);
+
+      // Movimiento
+      let head = { ...snake[0] };
+      if (direction === "UP") head.y -= 20;
+      if (direction === "DOWN") head.y += 20;
+      if (direction === "LEFT") head.x -= 20;
+      if (direction === "RIGHT") head.x += 20;
+      snake.unshift(head);
+
+      // Comer
+      if (head.x === food.x && head.y === food.y) {
+        score++;
+        document.getElementById("puntaje").textContent = "Puntaje: " + score;
+        food = {
+          x: Math.floor(Math.random() * 20) * 20,
+          y: Math.floor(Math.random() * 20) * 20
+        };
+      } else {
+        snake.pop();
+      }
+
+      // Serpiente
+      ctx.fillStyle = "lime";
+      snake.forEach(part => ctx.fillRect(part.x, part.y, 20, 20));
+
+      // Colisión
+      if (
+        head.x < 0 || head.x >= canvas.width ||
+        head.y < 0 || head.y >= canvas.height ||
+        snake.slice(1).some(p => p.x === head.x && p.y === head.y)
+      ) {
+        alert("¡Game Over! Tu puntaje fue: " + score);
+        enviarPuntaje(score);
+        reset();
+      }
+    }
+
+    function reset() {
+      snake = [{ x: 200, y: 200 }];
+      direction = "RIGHT";
+      score = 0;
+      document.getElementById("puntaje").textContent = "Puntaje: 0";
+
+      // Detener el juego hasta que el usuario vuelva a iniciar
+      clearInterval(intervalo);
+      intervalo = null;
+    }
+
+
+    function enviarPuntaje(puntos) {
+      fetch("/guardarPuntos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "username=" + encodeURIComponent(username) + "&puntuacion=" + puntos
+      })
+      .then(res => res.text())
+      .then(msg => console.log("Respuesta del servidor: " + msg))
+      .catch(err => console.error("Error al enviar puntuación:", err));
+    }
+
+   let intervalo = null;
+
+    function iniciarJuego() {
+      if (intervalo === null) {
+        intervalo = setInterval(draw, 150);
+      }
+    }
+
+</script>
+</body>
+</html>
