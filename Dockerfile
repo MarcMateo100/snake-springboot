@@ -1,12 +1,5 @@
 FROM eclipse-temurin:17-jdk
 WORKDIR /app
-
-# Copia todos los archivos del proyecto
-COPY . .
-
-# Compila el proyecto
-RUN ./mvnw clean package -DskipTests
-
-# Ejecuta el jar generado
+COPY snakeapp-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
-CMD ["java", "-jar", "target/snakeapp-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
