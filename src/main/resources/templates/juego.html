@@ -19,6 +19,19 @@
           font-size: 18px;
           margin-top: 10px;
         }
+        #botones-direccion {
+          margin-top: 20px;
+          display: none;
+        }
+        .boton-dir {
+          font-size: 24px;
+          padding: 10px 20px;
+          margin: 5px;
+          background-color: #4CAF50;
+          color: white;
+          border: none;
+          border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -34,11 +47,20 @@
 <h1>Bienvenido, <span th:text="${usuario.username}">Jugador</span> 🐍</h1>
 <p>¡Juega y supera tu propio récord!</p>
 
-<!-- Justo antes del canvas o el botón de iniciar juego -->
-<div id="joystick-zone" style="width:100px; height:100px; margin: 20px auto; display: none;"></div>
-
 <canvas id="gameCanvas" width="400" height="400"></canvas>
 <p id="puntaje">Puntaje: 0</p>
+
+<!-- 🕹️ Botones de dirección táctil -->
+<div id="botones-direccion">
+    <div>
+        <button class="boton-dir" onclick="cambiarDireccion('UP')">⬆️</button>
+    </div>
+    <div>
+        <button class="boton-dir" onclick="cambiarDireccion('LEFT')">⬅️</button>
+        <button class="boton-dir" onclick="cambiarDireccion('DOWN')">⬇️</button>
+        <button class="boton-dir" onclick="cambiarDireccion('RIGHT')">➡️</button>
+    </div>
+</div>
 
 <div style="margin-top: 20px;">
     <button onclick="iniciarJuego()" style="
@@ -53,11 +75,7 @@
     </button>
 </div>
 
-<!-- Carga la librería nippleJS (puede ir antes de tu script final) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.9.0/nipplejs.min.js"></script>
-
 <script>
-    // --- Snake Game ---
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
@@ -76,11 +94,9 @@
       ctx.fillStyle = "black";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Comida
       ctx.fillStyle = "red";
       ctx.fillRect(food.x, food.y, 20, 20);
 
-      // Movimiento
       let head = { ...snake[0] };
       if (direction === "UP") head.y -= 20;
       if (direction === "DOWN") head.y += 20;
@@ -88,7 +104,6 @@
       if (direction === "RIGHT") head.x += 20;
       snake.unshift(head);
 
-      // Comer
       if (head.x === food.x && head.y === food.y) {
         score++;
         document.getElementById("puntaje").textContent = "Puntaje: " + score;
@@ -100,11 +115,9 @@
         snake.pop();
       }
 
-      // Serpiente
       ctx.fillStyle = "lime";
       snake.forEach(part => ctx.fillRect(part.x, part.y, 20, 20));
 
-      // Colisión
       if (
         head.x < 0 || head.x >= canvas.width ||
         head.y < 0 || head.y >= canvas.height ||
@@ -121,19 +134,14 @@
       direction = "RIGHT";
       score = 0;
       document.getElementById("puntaje").textContent = "Puntaje: 0";
-
-      // Detener el juego hasta que el usuario vuelva a iniciar
       clearInterval(intervalo);
       intervalo = null;
     }
 
-
     function enviarPuntaje(puntos) {
       fetch("/guardarPuntos", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: "username=" + encodeURIComponent(username) + "&puntuacion=" + puntos
       })
       .then(res => res.text())
@@ -141,7 +149,7 @@
       .catch(err => console.error("Error al enviar puntuación:", err));
     }
 
-   let intervalo = null;
+    let intervalo = null;
 
     function iniciarJuego() {
       if (intervalo === null) {
@@ -149,35 +157,16 @@
       }
     }
 
-    // Detectar si es móvil
+    // 👉 Detección de móvil y mostrar botones táctiles
     const esMovil = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
     if (esMovil) {
-      // Mostrar zona del joystick
-      document.getElementById("joystick-zone").style.display = "block";
-
-      // Crear joystick
-      const joystick = nipplejs.create({
-        zone: document.getElementById('joystick-zone'),
-        mode: 'static',
-        position: { left: '50%', top: '80%' },
-        color: 'green'
-      });
-
-      joystick.on('dir', (evt, data) => {
-        const dirMap = {
-          up: 'UP',
-          down: 'DOWN',
-          left: 'LEFT',
-          right: 'RIGHT'
-        };
-        if (data && data.direction && dirMap[data.direction.angle]) {
-          direction = dirMap[data.direction.angle];
-        }
-      });
+      document.getElementById("botones-direccion").style.display = "block";
     }
 
-
+    // 🎯 Función para cambiar dirección desde botones
+    function cambiarDireccion(nuevaDir) {
+      direction = nuevaDir;
+    }
 </script>
 </body>
 </html>
