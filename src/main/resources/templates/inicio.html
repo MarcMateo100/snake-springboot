@@ -29,16 +29,25 @@
       border-radius: 4px;
     }
 
-    body {
-      font-family: sans-serif;
-      background: #f0f4f8;
-      text-align: center;
-      padding-top: 80px;
+    @media only screen and (max-width: 600px) {
+      .boton {
+        width: 90vw;             /* casi toda la pantalla */
+        font-size: 28px;         /* más grande */
+        padding: 20px 0;
+        margin: 10px auto;
+        display: block;
+      }
+
+      h1 {
+        font-size: 22px;
+        padding: 10px;
+      }
+
+      body {
+        padding-top: 30px;
+      }
     }
-    h1 {
-      font-size: 28px;
-      color: #333;
-    }
+
     .boton {
       margin: 20px;
       padding: 15px 30px;
