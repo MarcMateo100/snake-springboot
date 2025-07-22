@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Juego Snake</title>
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        body {
-          font-family: sans-serif;
-          text-align: center;
-          background-color: #e6f2ff;
+
+        html, body {
+          height: 100%;
           margin: 0;
           padding: 0;
+          background-color: #e6f2ff;
+          font-family: sans-serif;
         }
 
         canvas {
@@ -45,30 +46,41 @@
         @media only screen and (max-width: 600px) {
           canvas {
             width: 100vw;
-            height: 100vw;
+            height: 100vw; /* cuadrado máximo */
+            margin: 0 auto;
+            display: block;
           }
 
-          .boton-dir {
-            font-size: 36px;
-            padding: 18px 30px;
+          #puntaje {
+            font-size: 24px;
+            margin: 8px 0;
           }
 
           #botones-direccion {
             display: flex;
             flex-direction: column;
             align-items: center;
+            margin-top: 10px;
           }
 
           #botones-direccion div {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
+            gap: 10px;
           }
 
-          #puntaje {
-            font-size: 24px;
+          .boton-dir {
+            font-size: 36px;
+            padding: 20px 30px;
+          }
+
+          h1, p {
+            margin: 10px 0;
+            font-size: 18px;
           }
         }
+
     </style>
 
 </head>
@@ -221,7 +233,7 @@
       document.getElementById("botones-direccion").style.display = "block";
 
       // Adaptar el tamaño del canvas a casi toda la pantalla
-      const lado = Math.min(window.innerWidth, window.innerHeight);
+      const lado = Math.min(window.innerWidth, window.innerHeight * 0.85);
       canvas.width = lado;
       canvas.height = lado;
     }
