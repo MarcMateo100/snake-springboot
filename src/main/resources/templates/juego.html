@@ -9,30 +9,68 @@
           font-family: sans-serif;
           text-align: center;
           background-color: #e6f2ff;
+          margin: 0;
+          padding: 0;
         }
+
         canvas {
           border: 2px solid #333;
           background-color: #000;
-          margin-top: 20px;
+          margin-top: 10px;
+          width: 400px;
+          height: 400px;
         }
+
         #puntaje {
           font-size: 18px;
           margin-top: 10px;
         }
+
         #botones-direccion {
           margin-top: 20px;
           display: none;
         }
+
         .boton-dir {
-          font-size: 24px;
-          padding: 10px 20px;
-          margin: 5px;
+          font-size: 32px; /* 30% más grande */
+          padding: 15px 25px;
+          margin: 8px;
           background-color: #4CAF50;
           color: white;
           border: none;
-          border-radius: 4px;
+          border-radius: 6px;
+        }
+
+        /* 🖼️ Estilos para móvil */
+        @media only screen and (max-width: 600px) {
+          canvas {
+            width: 100vw;
+            height: 100vw;
+          }
+
+          .boton-dir {
+            font-size: 36px;
+            padding: 18px 30px;
+          }
+
+          #botones-direccion {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+
+          #botones-direccion div {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+          }
+
+          #puntaje {
+            font-size: 24px;
+          }
         }
     </style>
+
 </head>
 <body>
 
@@ -178,11 +216,16 @@
       }
     }
 
-    // 👉 Mostrar botones si es móvil
     const esMovil = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if (esMovil) {
       document.getElementById("botones-direccion").style.display = "block";
+
+      // Adaptar el tamaño del canvas a casi toda la pantalla
+      const lado = Math.min(window.innerWidth, window.innerHeight);
+      canvas.width = lado;
+      canvas.height = lado;
     }
+
 </script>
 </body>
 </html>

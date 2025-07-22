@@ -18,7 +18,9 @@
         }
         #controles {
           margin-top: 15px;
+          display: none; /* Oculto por defecto */
         }
+
         button {
           font-size: 18px;
           margin: 0 10px;
@@ -231,6 +233,13 @@
 
       requestAnimationFrame(draw);
     }
+
+    // 👉 Mostrar botones solo si es móvil
+    const esMovil = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (esMovil) {
+      document.getElementById("controles").style.display = "block";
+    }
+
 
 </script>
 
