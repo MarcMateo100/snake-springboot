@@ -56,9 +56,14 @@
           }
 
           canvas {
-            width: 100vw;
-            height: calc(100vh * 0.6); /* Prioriza altura disponible */
+            width: 400px;             /* Mantén ancho fijo */
+            height: calc(100vh * 0.5); /* Ajusta solo la altura */
             margin-top: 5px;
+          }
+
+          #puntaje {
+            font-size: 22px;
+            margin: 5px 0;
           }
 
           #botones-direccion {
@@ -77,18 +82,13 @@
 
           .boton-dir {
             font-size: 36px;
-            padding: 18px 28px;
-          }
-
-          #puntaje {
-            font-size: 22px;
-            margin: 5px 0;
+            padding: 18px 30px;
           }
 
           button[onclick="iniciarJuego()"] {
-            margin: 8px 0;
-            font-size: 18px;
-            padding: 12px 28px;
+            margin-top: 8px;
+            font-size: 20px;
+            padding: 14px 28px;
           }
 
           h1, p {
@@ -96,10 +96,9 @@
             margin: 6px 0;
           }
 
-          nav {
-            display: none; /* Opcional: oculta navegación para más espacio */
-          }
+
         }
+
 
 
     </style>
