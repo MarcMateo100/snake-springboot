@@ -45,23 +45,20 @@
        @media only screen and (max-width: 600px) {
           html, body {
             height: 100vh;
-            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            overflow-y: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: start;
+            justify-content: flex-start;
+            background-color: #e6f2ff;
           }
 
           canvas {
             width: 100vw;
-            height: 100vw;
-            margin: 0 auto;
-            display: block;
-          }
-
-          #puntaje {
-            font-size: 24px;
-            margin: 8px 0;
+            height: calc(100vh * 0.6); /* Prioriza altura disponible */
+            margin-top: 5px;
           }
 
           #botones-direccion {
@@ -80,18 +77,27 @@
 
           .boton-dir {
             font-size: 36px;
-            padding: 20px 30px;
+            padding: 18px 28px;
           }
 
-          h1, p {
-            font-size: 18px;
-            margin: 6px 0;
+          #puntaje {
+            font-size: 22px;
+            margin: 5px 0;
           }
 
           button[onclick="iniciarJuego()"] {
-            margin-top: 10px;
-            font-size: 20px;
-            padding: 14px 30px;
+            margin: 8px 0;
+            font-size: 18px;
+            padding: 12px 28px;
+          }
+
+          h1, p {
+            font-size: 16px;
+            margin: 6px 0;
+          }
+
+          nav {
+            display: none; /* Opcional: oculta navegación para más espacio */
           }
         }
 
