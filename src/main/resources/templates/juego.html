@@ -44,24 +44,25 @@
 
        @media only screen and (max-width: 600px) {
           html, body {
-            height: 100vh;
             margin: 0;
             padding: 0;
-            overflow-y: auto;
+            height: 100vh;
+            overflow-y: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: flex-start;
             background-color: #e6f2ff;
           }
 
           canvas {
-            width: 400px; /* ancho fijo */
-            height: calc(100vh * 0.5); /* solo ajusta altura */
-            margin-top: 10px;
+            width: 90vw; /* ligeramente más pequeño que el ancho total */
+            height: calc(100vh * 0.45); /* usa ~45% del alto disponible */
+            margin-top: 8px;
           }
 
           #puntaje {
-            font-size: 22px;
+            font-size: 20px;
             margin: 6px 0;
           }
 
@@ -69,37 +70,38 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 8px;
+            margin-top: 6px;
           }
 
           #botones-direccion div {
             display: flex;
             justify-content: center;
-            flex-wrap: wrap;
             gap: 10px;
+            flex-wrap: wrap;
           }
 
           .boton-dir {
-            font-size: 36px;
-            padding: 18px 28px;
+            font-size: 32px;
+            padding: 16px 26px;
           }
 
           button[onclick="iniciarJuego()"] {
-            margin: 10px 0;
-            font-size: 20px;
-            padding: 14px 30px;
+            margin-top: 8px;
+            font-size: 18px;
+            padding: 12px 24px;
           }
 
           h1, p {
-            font-size: 18px;
-            margin: 5px 0;
+            font-size: 16px;
+            margin: 6px 0;
           }
 
           nav {
-            display: block; /* ✅ mantiene visible el nav */
+            display: block;
             width: 100%;
           }
         }
+
 
 
 
@@ -253,9 +255,11 @@
     if (esMovil) {
       document.getElementById("botones-direccion").style.display = "block";
 
-      canvas.width = 400; // ancho fijo
-      canvas.height = window.innerHeight * 0.5; // solo altura relativa
+      // Ajusta solo la altura vertical del canvas
+      canvas.width = window.innerWidth * 0.9;
+      canvas.height = window.innerHeight * 0.45;
     }
+
 
 
 </script>
