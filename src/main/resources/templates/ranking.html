@@ -35,7 +35,7 @@
 
 <nav style="background-color: #333; padding: 10px;">
     <div style="display: flex; justify-content: center; gap: 30px;">
-        <a th:href="@{/juego}" style="color: white; text-decoration: none; font-weight: bold;">🐍 Juego</a>
+        <a th:href="@{/inicio}" style="color: white; text-decoration: none; font-weight: bold;">🎮 Juego</a>
         <a th:href="@{/ranking}" style="color: white; text-decoration: none; font-weight: bold;">🏆 Ranking</a>
         <a th:href="@{/logout}" style="color: white; text-decoration: none; font-weight: bold;">🔒 Cerrar sesión</a>
     </div>
@@ -62,7 +62,7 @@
 </table>
 
 <div style="margin-top: 30px;">
-    <form th:action="@{/juego}" method="get">
+    <form th:action="@{/inicio}" method="get">
         <button type="submit" style="
       background-color: #2196F3;
       color: white;
@@ -71,7 +71,7 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;">
-            Volver al Juego 🐍
+            Volver al Juego 🎮
         </button>
     </form>
 </div>

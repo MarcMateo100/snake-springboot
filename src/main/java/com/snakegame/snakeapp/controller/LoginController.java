@@ -31,10 +31,21 @@ public class LoginController {
         if (usuario != null) {
             session.setAttribute("usuario", usuario); // guardamos el usuario en sesión
             model.addAttribute("usuario", usuario);
-            return "juego";
+            return "inicio";
         } else {
             model.addAttribute("error", "Usuario o contraseña incorrectos");
             return "login";
+        }
+    }
+
+    @GetMapping("/inicio")
+    public String mostrarInicio(HttpSession session, Model model) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario != null) {
+            model.addAttribute("usuario", usuario);
+            return "inicio";
+        } else {
+            return "login"; // si no hay sesión, redirigir a login
         }
     }
 
@@ -44,6 +55,17 @@ public class LoginController {
         if (usuario != null) {
             model.addAttribute("usuario", usuario);
             return "juego";
+        } else {
+            return "login"; // si no hay sesión, redirigir a login
+        }
+    }
+
+    @GetMapping("/juego2")
+    public String mostrarJuego2(HttpSession session, Model model) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario != null) {
+            model.addAttribute("usuario", usuario);
+            return "juego2";
         } else {
             return "login"; // si no hay sesión, redirigir a login
         }

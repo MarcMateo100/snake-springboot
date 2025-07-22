@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Arcanoid Clásico</title>
+    <style>
+        body {
+          background-color: #111;
+          color: #fff;
+          font-family: sans-serif;
+          text-align: center;
+        }
+        canvas {
+          background-color: #000;
+          border: 3px solid #4CAF50;
+          display: block;
+          margin: 20px auto;
+        }
+        #controles {
+          margin-top: 15px;
+        }
+        button {
+          font-size: 18px;
+          margin: 0 10px;
+          padding: 10px 20px;
+          background-color: #4CAF50;
+          color: white;
+          border: none;
+          border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<nav style="background-color: #333; padding: 10px;">
+    <div style="display: flex; justify-content: center; gap: 30px;">
+        <a th:href="@{/inicio}" style="color: white; text-decoration: none; font-weight: bold;">🎮 Juego</a>
+        <a th:href="@{/ranking}" style="color: white; text-decoration: none; font-weight: bold;">🏆 Ranking</a>
+        <a th:href="@{/logout}" style="color: white; text-decoration: none; font-weight: bold;">🔒 Cerrar sesión</a>
+    </div>
+</nav>
+
+<h1>🧱 Arcanoid Clásico</h1>
+<canvas id="canvas" width="480" height="320"></canvas>
+<div id="controles">
+    <button onclick="moverIzquierda()">⬅️</button>
+    <button onclick="moverDerecha()">➡️</button>
+</div>
+
+<div style="margin-top: 20px;">
+    <button onclick="iniciarJuego()" style="
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 25px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;">
+        Empezar partida ▶️
+    </button>
+</div>
+
+<script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    let juegoActivo = false;
+
+    let x = canvas.width / 2;
+    let y = canvas.height - 30;
+    let dx = 2;
+    let dy = -2;
+    let ballRadius = 10;
+
+    let paddleHeight = 10;
+    let paddleWidth = 75;
+    let paddleX = (canvas.width - paddleWidth) / 2;
+
+    let rightPressed = false;
+    let leftPressed = false;
+
+    let brickRowCount = 3;
+    let brickColumnCount = 5;
+    let brickWidth = 75;
+    let brickHeight = 20;
+    let brickPadding = 10;
+    let brickOffsetTop = 30;
+    let brickOffsetLeft = 30;
+
+    let score = 0;
+
+    let bricks = [];
+    for(let c=0; c<brickColumnCount; c++) {
+      bricks[c] = [];
+      for(let r=0; r<brickRowCount; r++) {
+        bricks[c][r] = { x: 0, y: 0, status: 1 };
+      }
+    }
+
+    document.addEventListener("keydown", e => {
+      if(e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
+      if(e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
+    });
+    document.addEventListener("keyup", e => {
+      if(e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
+      if(e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
+    });
+
+    function moverIzquierda() {
+      paddleX -= 25;
+    }
+    function moverDerecha() {
+      paddleX += 25;
+    }
+
+    function collisionDetection() {
+      for(let c=0; c<brickColumnCount; c++) {
+        for(let r=0; r<brickRowCount; r++) {
+          let b = bricks[c][r];
+          if(b.status === 1) {
+            if(
+              x > b.x && x < b.x + brickWidth &&
+              y > b.y && y < b.y + brickHeight
+            ) {
+              dy = -dy;
+              b.status = 0;
+              score++;
+              if(score === brickRowCount * brickColumnCount) {
+                alert("🎉 ¡Ganaste!");
+                document.location.reload();
+              }
+            }
+          }
+        }
+      }
+    }
+
+    function drawBall() {
+      ctx.beginPath();
+      ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+      ctx.fillStyle = "#00ffcc";
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    function drawPaddle() {
+      ctx.beginPath();
+      ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+      ctx.fillStyle = "#4CAF50";
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    function drawBricks() {
+      for(let c=0; c<brickColumnCount; c++) {
+        for(let r=0; r<brickRowCount; r++) {
+          if(bricks[c][r].status === 1) {
+            let brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
+            let brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
+            bricks[c][r].x = brickX;
+            bricks[c][r].y = brickY;
+            ctx.beginPath();
+            ctx.rect(brickX, brickY, brickWidth, brickHeight);
+            ctx.fillStyle = "#ff704d";
+            ctx.fill();
+            ctx.closePath();
+          }
+        }
+      }
+    }
+
+    function iniciarJuego() {
+      // Restablecer estado del juego
+      x = canvas.width / 2;
+      y = canvas.height - 30;
+      dx = 2;
+      dy = -2;
+      score = 0;
+
+      paddleX = (canvas.width - paddleWidth) / 2;
+      bricks = [];
+      for(let c = 0; c < brickColumnCount; c++) {
+        bricks[c] = [];
+        for(let r = 0; r < brickRowCount; r++) {
+          bricks[c][r] = { x: 0, y: 0, status: 1 };
+        }
+      }
+
+      juegoActivo = true;
+      requestAnimationFrame(draw);
+    }
+
+    function drawScore() {
+      ctx.font = "16px Arial";
+      ctx.fillStyle = "#fff";
+      ctx.fillText("Puntaje: " + score, 8, 20);
+    }
+
+
+    function draw() {
+      if (!juegoActivo) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBricks();
+      drawBall();
+      drawPaddle();
+      drawScore();
+      collisionDetection();
+
+      if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+        dx = -dx;
+      }
+      if (y + dy < ballRadius) {
+        dy = -dy;
+      } else if (y + dy > canvas.height - ballRadius) {
+        if (x > paddleX && x < paddleX + paddleWidth) {
+          dy = -dy;
+        } else {
+          juegoActivo = false; // 🛑 Detener el juego
+          alert("💀 Game Over");
+          return; // No seguir animando
+        }
+      }
+
+      x += dx;
+      y += dy;
+
+      if (rightPressed) paddleX += 7;
+      if (leftPressed) paddleX -= 7;
+      paddleX = Math.max(0, Math.min(paddleX, canvas.width - paddleWidth));
+
+      requestAnimationFrame(draw);
+    }
+
+</script>
+
+</body>
+</html>

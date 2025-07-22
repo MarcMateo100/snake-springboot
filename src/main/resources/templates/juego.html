@@ -38,7 +38,7 @@
 
 <nav style="background-color: #333; padding: 10px;">
     <div style="display: flex; justify-content: center; gap: 30px;">
-        <a th:href="@{/juego}" style="color: white; text-decoration: none; font-weight: bold;">🐍 Juego</a>
+        <a th:href="@{/inicio}" style="color: white; text-decoration: none; font-weight: bold;">🎮 Juego</a>
         <a th:href="@{/ranking}" style="color: white; text-decoration: none; font-weight: bold;">🏆 Ranking</a>
         <a th:href="@{/logout}" style="color: white; text-decoration: none; font-weight: bold;">🔒 Cerrar sesión</a>
     </div>
@@ -50,15 +50,15 @@
 <canvas id="gameCanvas" width="400" height="400"></canvas>
 <p id="puntaje">Puntaje: 0</p>
 
-<!-- 🕹️ Botones de dirección táctil -->
+<!-- 👇 Actualiza tus botones para usar touchstart -->
 <div id="botones-direccion">
     <div>
-        <button class="boton-dir" onclick="cambiarDireccion('UP')">⬆️</button>
+        <button class="boton-dir" ontouchstart="cambiarDireccion('UP')">⬆️</button>
     </div>
     <div>
-        <button class="boton-dir" onclick="cambiarDireccion('LEFT')">⬅️</button>
-        <button class="boton-dir" onclick="cambiarDireccion('DOWN')">⬇️</button>
-        <button class="boton-dir" onclick="cambiarDireccion('RIGHT')">➡️</button>
+        <button class="boton-dir" ontouchstart="cambiarDireccion('LEFT')">⬅️</button>
+        <button class="boton-dir" ontouchstart="cambiarDireccion('DOWN')">⬇️</button>
+        <button class="boton-dir" ontouchstart="cambiarDireccion('RIGHT')">➡️</button>
     </div>
 </div>
 
@@ -74,23 +74,43 @@
         Empezar partida ▶️
     </button>
 </div>
-
 <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
     let snake = [{ x: 200, y: 200 }];
     let direction = "RIGHT";
+    let nextDirection = "RIGHT"; // 🆕 Buffer para dirección
     let food = { x: 100, y: 100 };
     let score = 0;
     let username = "[[${#strings.escapeJavaScript(usuario.username)}]]";
 
+    // 🎮 Escucha de teclado
     document.addEventListener("keydown", e => {
-      const dir = { ArrowUp: "UP", ArrowDown: "DOWN", ArrowLeft: "LEFT", ArrowRight: "RIGHT" };
-      if (dir[e.key]) direction = dir[e.key];
+      const dirMap = {
+        ArrowUp: "UP",
+        ArrowDown: "DOWN",
+        ArrowLeft: "LEFT",
+        ArrowRight: "RIGHT"
+      };
+      const nueva = dirMap[e.key];
+      if (nueva) cambiarDireccion(nueva);
     });
 
+    // 🎯 Función segura para cambiar dirección
+    function cambiarDireccion(nuevaDir) {
+      const opuestos = {
+        UP: "DOWN", DOWN: "UP",
+        LEFT: "RIGHT", RIGHT: "LEFT"
+      };
+      if (opuestos[direction] !== nuevaDir) {
+        nextDirection = nuevaDir;
+      }
+    }
+
     function draw() {
+      direction = nextDirection; // ✅ Aplica justo antes del movimiento
+
       ctx.fillStyle = "black";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -132,6 +152,7 @@
     function reset() {
       snake = [{ x: 200, y: 200 }];
       direction = "RIGHT";
+      nextDirection = "RIGHT";
       score = 0;
       document.getElementById("puntaje").textContent = "Puntaje: 0";
       clearInterval(intervalo);
@@ -153,19 +174,14 @@
 
     function iniciarJuego() {
       if (intervalo === null) {
-        intervalo = setInterval(draw, 150);
+        intervalo = setInterval(draw, 100); // 🔄 Más rápido
       }
     }
 
-    // 👉 Detección de móvil y mostrar botones táctiles
+    // 👉 Mostrar botones si es móvil
     const esMovil = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if (esMovil) {
       document.getElementById("botones-direccion").style.display = "block";
-    }
-
-    // 🎯 Función para cambiar dirección desde botones
-    function cambiarDireccion(nuevaDir) {
-      direction = nuevaDir;
     }
 </script>
 </body>
