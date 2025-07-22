@@ -47,30 +47,29 @@
             height: 100vh;
             margin: 0;
             padding: 0;
-            overflow-y: hidden;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
             background-color: #e6f2ff;
           }
 
           canvas {
-            width: 400px;             /* Mantén ancho fijo */
-            height: calc(100vh * 0.5); /* Ajusta solo la altura */
-            margin-top: 5px;
+            width: 400px; /* ancho fijo */
+            height: calc(100vh * 0.5); /* solo ajusta altura */
+            margin-top: 10px;
           }
 
           #puntaje {
             font-size: 22px;
-            margin: 5px 0;
+            margin: 6px 0;
           }
 
           #botones-direccion {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 5px;
+            margin-top: 8px;
           }
 
           #botones-direccion div {
@@ -82,20 +81,26 @@
 
           .boton-dir {
             font-size: 36px;
-            padding: 18px 30px;
+            padding: 18px 28px;
           }
 
           button[onclick="iniciarJuego()"] {
-            margin-top: 8px;
+            margin: 10px 0;
             font-size: 20px;
-            padding: 14px 28px;
+            padding: 14px 30px;
           }
 
           h1, p {
-            font-size: 16px;
-            margin: 6px 0;
+            font-size: 18px;
+            margin: 5px 0;
+          }
+
+          nav {
+            display: block; /* ✅ mantiene visible el nav */
+            width: 100%;
           }
         }
+
 
 
 
@@ -250,10 +255,8 @@
     if (esMovil) {
       document.getElementById("botones-direccion").style.display = "block";
 
-      // Adaptar el tamaño del canvas a casi toda la pantalla
-      const lado = Math.min(window.innerWidth, window.innerHeight * 0.85);
-      canvas.width = lado;
-      canvas.height = lado;
+      canvas.width = 400; // ancho fijo
+      canvas.height = window.innerHeight * 0.5; // solo altura relativa
     }
 
 </script>
