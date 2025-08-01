@@ -48,6 +48,9 @@
     }
 
     .boton {
+      display: inline-block;
+      width: 250px; /* ajusta según el más largo */
+      text-align: center;
       margin: 20px;
       padding: 15px 30px;
       font-size: 20px;
@@ -58,6 +61,7 @@
       background-color: #007BFF;
       transition: background-color 0.3s ease;
     }
+
     .boton:hover {
       background-color: #0056b3;
     }
@@ -78,7 +82,7 @@
 
   <div style="display: flex; flex-direction: column; align-items: center;">
     <button class="boton" onclick="location.href='/juego'">🐍 Jugar Snake</button>
-    <button class="boton" onclick="location.href='/juego2'">🍄 Jugar Arcanoid</button>
+    <button class="boton" onclick="location.href='/juego2'">🧱 Jugar Arcanoid</button>
     <button class="boton" onclick="location.href='/juego3'">💣 Jugar Buscaminas</button>
     <button class="boton" onclick="location.href='/juego4'">🏓 Jugar Pong</button>
   </div>

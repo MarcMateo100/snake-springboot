@@ -119,33 +119,35 @@
     </div>
 </nav>
 
-<h1>Bienvenido, <span th:text="${usuario.username}">Jugador</span> 🐍</h1>
-<p id="puntaje">Puntaje: 0</p>
-<canvas id="gameCanvas" width="400" height="400"></canvas>
+<div class="contenedor-juego">
+    <h1>Bienvenido, <span th:text="${usuario.username}">Jugador</span> 🐍</h1>
+    <p id="puntaje">Puntaje: 0</p>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
 
-<!-- 👇 Actualiza tus botones para usar touchstart -->
-<div id="botones-direccion">
-    <div>
-        <button class="boton-dir" ontouchstart="cambiarDireccion('UP')">⬆️</button>
+    <!-- 👇 Actualiza tus botones para usar touchstart -->
+    <div id="botones-direccion">
+        <div>
+            <button class="boton-dir" ontouchstart="cambiarDireccion('UP')">⬆️</button>
+        </div>
+        <div>
+            <button class="boton-dir" ontouchstart="cambiarDireccion('LEFT')">⬅️</button>
+            <button class="boton-dir" ontouchstart="cambiarDireccion('DOWN')">⬇️</button>
+            <button class="boton-dir" ontouchstart="cambiarDireccion('RIGHT')">➡️</button>
+        </div>
     </div>
-    <div>
-        <button class="boton-dir" ontouchstart="cambiarDireccion('LEFT')">⬅️</button>
-        <button class="boton-dir" ontouchstart="cambiarDireccion('DOWN')">⬇️</button>
-        <button class="boton-dir" ontouchstart="cambiarDireccion('RIGHT')">➡️</button>
-    </div>
-</div>
 
-<div style="margin-top: 20px;">
-    <button onclick="iniciarJuego()" style="
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 25px;
-    font-size: 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;">
-        Empezar partida ▶️
-    </button>
+    <div style="margin-top: 20px;">
+        <button onclick="iniciarJuego()" style="
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 25px;
+        font-size: 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;">
+            Empezar partida ▶️
+        </button>
+    </div>
 </div>
 <script>
     const canvas = document.getElementById("gameCanvas");
