@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minesweeper Clásico</title>
     <style>
         body {
@@ -25,6 +25,24 @@
           border: none;
           border-radius: 5px;
         }
+
+        @media only screen and (max-width: 600px) {
+          canvas {
+            width: 90vw; /* 90% del ancho de la pantalla */
+            height: auto; /* se ajusta automáticamente */
+          }
+
+          button {
+            width: 80vw;
+            font-size: 16px;
+          }
+
+          h1 {
+            font-size: 20px;
+          }
+        }
+
+
     </style>
 </head>
 <body>
@@ -53,6 +71,12 @@
     let tablero = [];
     let revelado = [];
     let juegoTerminado = false;
+
+    const esMovil = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (esMovil) {
+      canvas.width = window.innerWidth * 0.9;
+      canvas.height = canvas.width; // cuadrado
+    }
 
     function iniciarJuego() {
       juegoTerminado = false;
