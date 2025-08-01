@@ -2,6 +2,8 @@ package com.snakegame.snakeapp.controller;
 
 import com.snakegame.snakeapp.model.Usuario;
 import com.snakegame.snakeapp.repository.UsuarioRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -18,36 +20,69 @@ public class LoginController {
     private UsuarioRepository usuarioRepo;
 
     @GetMapping("/")
-    public String mostrarFormulario() {
-        return "login"; // Muestra login.html
+    public String home(@CookieValue(value = "usuario", defaultValue = "") String username) {
+        if (!username.isEmpty()) {
+            return "redirect:/inicio";
+        } else {
+            return "redirect:/login";
+        }
     }
 
     @PostMapping("/login")
     public String login(@RequestParam String username,
                         @RequestParam String password,
                         HttpSession session,
+                        HttpServletResponse response,
                         Model model) {
         Usuario usuario = usuarioRepo.findByUsernameAndPassword(username, password);
         if (usuario != null) {
-            session.setAttribute("usuario", usuario); // guardamos el usuario en sesión
+            session.setAttribute("usuario", usuario); // sesión activa
             model.addAttribute("usuario", usuario);
-            return "inicio";
+
+            // 🧠 Crear cookie persistente
+            Cookie cookie = new Cookie("usuario", usuario.getUsername());
+            cookie.setMaxAge(7 * 24 * 60 * 60); // 7 días
+            cookie.setPath("/");
+            response.addCookie(cookie);
+
+            return "redirect:/inicio";
         } else {
             model.addAttribute("error", "Usuario o contraseña incorrectos");
             return "login";
         }
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletResponse response, HttpSession session) {
+        session.invalidate(); // cerrar sesión
+
+        Cookie cookie = new Cookie("usuario", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        return "redirect:/login";
+    }
+
     @GetMapping("/inicio")
-    public String mostrarInicio(HttpSession session, Model model) {
+    public String inicio(@CookieValue(value = "usuario", defaultValue = "") String username,
+                         HttpSession session,
+                         Model model) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+
+        if (usuario == null && !username.isEmpty()) {
+            usuario = usuarioRepo.findByUsername(username);
+            session.setAttribute("usuario", usuario);
+        }
+
         if (usuario != null) {
             model.addAttribute("usuario", usuario);
             return "inicio";
         } else {
-            return "login"; // si no hay sesión, redirigir a login
+            return "redirect:/login";
         }
     }
+
 
     @GetMapping("/juego")
     public String mostrarJuego(HttpSession session, Model model) {
