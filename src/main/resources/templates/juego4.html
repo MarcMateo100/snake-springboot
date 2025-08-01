@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Pong Clásico</title>
+    <style>
+        body {
+          background-color: #111;
+          color: #fff;
+          font-family: sans-serif;
+          text-align: center;
+        }
+        canvas {
+          background-color: #000;
+          border: 3px solid #4CAF50;
+          display: block;
+          margin: 20px auto;
+        }
+        button {
+          font-size: 18px;
+          margin: 10px;
+          padding: 10px 20px;
+          background-color: #4CAF50;
+          color: white;
+          border: none;
+          border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<nav style="background-color: #333; padding: 10px;">
+    <div style="display: flex; justify-content: center; gap: 30px;">
+        <a th:href="@{/inicio}" style="color: white; text-decoration: none; font-weight: bold;">🎮 Juego</a>
+        <a th:href="@{/ranking}" style="color: white; text-decoration: none; font-weight: bold;">🏆 Ranking</a>
+        <a th:href="@{/logout}" style="color: white; text-decoration: none; font-weight: bold;">🔒 Cerrar sesión</a>
+    </div>
+</nav>
+
+<h1>🏓 Pong Clásico</h1>
+<canvas id="canvas" width="480" height="320"></canvas>
+<button onclick="iniciarJuego()">Empezar partida ▶️</button>
+
+<script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    let jugadorY = canvas.height / 2 - 30;
+    let iaY = canvas.height / 2 - 30;
+    const paddleHeight = 60;
+    const paddleWidth = 10;
+    const ballSize = 10;
+
+    let ballX = canvas.width / 2;
+    let ballY = canvas.height / 2;
+    let ballDX = 3;
+    let ballDY = 2;
+
+    let score = 0;
+    let juegoActivo = false;
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "ArrowUp") jugadorY -= 20;
+      if (e.key === "ArrowDown") jugadorY += 20;
+    });
+
+    function iniciarJuego() {
+      score = 0;
+      ballX = canvas.width / 2;
+      ballY = canvas.height / 2;
+      ballDX = 3;
+      ballDY = 2;
+      juegoActivo = true;
+      requestAnimationFrame(draw);
+    }
+
+    function draw() {
+      if (!juegoActivo) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Dibujar palas
+      ctx.fillStyle = "#4CAF50";
+      ctx.fillRect(10, jugadorY, paddleWidth, paddleHeight); // Jugador
+      ctx.fillRect(canvas.width - 20, iaY, paddleWidth, paddleHeight); // IA
+
+      // Dibujar pelota
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(ballX, ballY, ballSize, ballSize);
+
+      // Movimiento de pelota
+      ballX += ballDX;
+      ballY += ballDY;
+
+      // Rebote vertical
+      if (ballY <= 0 || ballY + ballSize >= canvas.height) ballDY = -ballDY;
+
+      // Rebote con jugador
+      if (ballX <= 20 && ballY + ballSize > jugadorY && ballY < jugadorY + paddleHeight) {
+        ballDX = -ballDX;
+      }
+
+      // Rebote con IA
+      if (ballX + ballSize >= canvas.width - 20 && ballY + ballSize > iaY && ballY < iaY + paddleHeight) {
+        ballDX = -ballDX;
+      }
+
+      // IA sigue la pelota
+      if (ballY > iaY + paddleHeight / 2) iaY += 2;
+      else iaY -= 2;
+
+      // Game Over
+      if (ballX < 0 || ballX > canvas.width) {
+        juegoActivo = false;
+        alert("💀 Game Over");
+        return;
+      }
+
+      // Puntaje
+      score++;
+      ctx.font = "16px Arial";
+      ctx.fillStyle = "#fff";
+      ctx.fillText("Puntaje: " + score, 10, 20);
+
+      // Limitar movimiento del jugador
+      jugadorY = Math.max(0, Math.min(jugadorY, canvas.height - paddleHeight));
+      iaY = Math.max(0, Math.min(iaY, canvas.height - paddleHeight));
+
+      requestAnimationFrame(draw);
+    }
+</script>
+
+</body>
+</html>

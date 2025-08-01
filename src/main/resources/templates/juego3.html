@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Minesweeper Clásico</title>
+    <style>
+        body {
+          background-color: #111;
+          color: #fff;
+          font-family: sans-serif;
+          text-align: center;
+        }
+        canvas {
+          background-color: #000;
+          border: 3px solid #4CAF50;
+          display: block;
+          margin: 20px auto;
+        }
+        button {
+          font-size: 18px;
+          margin: 10px;
+          padding: 10px 20px;
+          background-color: #4CAF50;
+          color: white;
+          border: none;
+          border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<nav style="background-color: #333; padding: 10px;">
+    <div style="display: flex; justify-content: center; gap: 30px;">
+        <a th:href="@{/inicio}" style="color: white; text-decoration: none; font-weight: bold;">🎮 Juego</a>
+        <a th:href="@{/ranking}" style="color: white; text-decoration: none; font-weight: bold;">🏆 Ranking</a>
+        <a th:href="@{/logout}" style="color: white; text-decoration: none; font-weight: bold;">🔒 Cerrar sesión</a>
+    </div>
+</nav>
+
+<h1>💣 Minesweeper Clásico</h1>
+<canvas id="canvas" width="320" height="320"></canvas>
+<button onclick="iniciarJuego()">Empezar partida ▶️</button>
+
+<script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const filas = 10;
+    const columnas = 10;
+    const tamaño = 32;
+    const minas = 10;
+
+    let tablero = [];
+    let revelado = [];
+    let juegoTerminado = false;
+
+    function iniciarJuego() {
+      juegoTerminado = false;
+      tablero = Array(filas).fill().map(() => Array(columnas).fill(0));
+      revelado = Array(filas).fill().map(() => Array(columnas).fill(false));
+
+      // Colocar minas
+      let colocadas = 0;
+      while (colocadas < minas) {
+        let f = Math.floor(Math.random() * filas);
+        let c = Math.floor(Math.random() * columnas);
+        if (tablero[f][c] !== -1) {
+          tablero[f][c] = -1;
+          colocadas++;
+        }
+      }
+
+      // Calcular números
+      for (let f = 0; f < filas; f++) {
+        for (let c = 0; c < columnas; c++) {
+          if (tablero[f][c] === -1) continue;
+          let total = 0;
+          for (let df = -1; df <= 1; df++) {
+            for (let dc = -1; dc <= 1; dc++) {
+              let nf = f + df;
+              let nc = c + dc;
+              if (nf >= 0 && nf < filas && nc >= 0 && nc < columnas && tablero[nf][nc] === -1) {
+                total++;
+              }
+            }
+          }
+          tablero[f][c] = total;
+        }
+      }
+
+      dibujarTablero();
+    }
+
+    function dibujarTablero() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let f = 0; f < filas; f++) {
+        for (let c = 0; c < columnas; c++) {
+          let x = c * tamaño;
+          let y = f * tamaño;
+          ctx.strokeStyle = "#4CAF50";
+          ctx.strokeRect(x, y, tamaño, tamaño);
+
+          if (revelado[f][c]) {
+            if (tablero[f][c] === -1) {
+              ctx.fillStyle = "#ff4d4d";
+              ctx.fillRect(x + 2, y + 2, tamaño - 4, tamaño - 4);
+              ctx.fillStyle = "#fff";
+              ctx.fillText("💣", x + 8, y + 24);
+            } else {
+              ctx.fillStyle = "#222";
+              ctx.fillRect(x + 2, y + 2, tamaño - 4, tamaño - 4);
+              if (tablero[f][c] > 0) {
+                ctx.fillStyle = "#0f0";
+                ctx.fillText(tablero[f][c], x + 12, y + 22);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    canvas.addEventListener("click", e => {
+      if (juegoTerminado) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const f = Math.floor(y / tamaño);
+      const c = Math.floor(x / tamaño);
+
+      revelar(f, c);
+      dibujarTablero();
+    });
+
+    function revelar(f, c) {
+      if (f < 0 || f >= filas || c < 0 || c >= columnas || revelado[f][c]) return;
+      revelado[f][c] = true;
+
+      if (tablero[f][c] === -1) {
+        juegoTerminado = true;
+        alert("💥 ¡Has pisado una mina!");
+        return;
+      }
+
+      if (tablero[f][c] === 0) {
+        for (let df = -1; df <= 1; df++) {
+          for (let dc = -1; dc <= 1; dc++) {
+            revelar(f + df, c + dc);
+          }
+        }
+      }
+    }
+</script>
+
+</body>
+</html>

@@ -71,6 +71,28 @@ public class LoginController {
         }
     }
 
+    @GetMapping("/juego3")
+    public String mostrarJuego3(HttpSession session, Model model) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario != null) {
+            model.addAttribute("usuario", usuario);
+            return "juego3";
+        } else {
+            return "login"; // si no hay sesión, redirigir a login
+        }
+    }
+
+    @GetMapping("/juego4")
+    public String mostrarJuego4(HttpSession session, Model model) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario != null) {
+            model.addAttribute("usuario", usuario);
+            return "juego4";
+        } else {
+            return "login"; // si no hay sesión, redirigir a login
+        }
+    }
+
     @GetMapping("/logout")
     public String cerrarSesion(HttpSession session) {
         session.invalidate();
