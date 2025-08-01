@@ -42,6 +42,21 @@
           }
         }
 
+        @media only screen and (max-width: 600px) {
+          #controles-movil {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+          }
+
+          #controles-movil button {
+            width: 60vw;
+            font-size: 20px;
+            padding: 12px;
+          }
+        }
+
 
     </style>
 </head>
@@ -57,6 +72,12 @@
 
 <h1>🏓 Pong Clásico</h1>
 <canvas id="canvas" width="480" height="320"></canvas>
+
+<div id="controles-movil" style="display: none; margin-top: 10px;">
+    <button onclick="moverPala('UP')">⬆️ Subir</button>
+    <button onclick="moverPala('DOWN')">⬇️ Bajar</button>
+</div>
+
 <button onclick="iniciarJuego()">Empezar partida ▶️</button>
 
 <script>
@@ -85,7 +106,8 @@
     const esMovil = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if (esMovil) {
       canvas.width = window.innerWidth * 0.9;
-      canvas.height = canvas.width; // cuadrado
+      canvas.height = canvas.width;
+      document.getElementById("controles-movil").style.display = "flex";
     }
 
     function iniciarJuego() {
@@ -96,6 +118,11 @@
       ballDY = 2;
       juegoActivo = true;
       requestAnimationFrame(draw);
+    }
+
+    function moverPala(direccion) {
+      if (direccion === "UP") jugadorY -= 20;
+      if (direccion === "DOWN") jugadorY += 20;
     }
 
     function draw() {
