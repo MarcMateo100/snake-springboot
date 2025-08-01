@@ -28,6 +28,12 @@ public class LoginController {
         }
     }
 
+    @GetMapping("/login")
+    public String mostrarLogin(Model model) {
+        return "login"; // nombre de tu plantilla login.html
+    }
+
+
     @PostMapping("/login")
     public String login(@RequestParam String username,
                         @RequestParam String password,
