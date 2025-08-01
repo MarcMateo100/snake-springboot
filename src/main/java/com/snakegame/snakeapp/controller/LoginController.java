@@ -128,12 +128,6 @@ public class LoginController {
         }
     }
 
-    @GetMapping("/logout")
-    public String cerrarSesion(HttpSession session) {
-        session.invalidate();
-        return "login";
-    }
-
     @PostMapping("/guardarPuntos")
     @ResponseBody
     public String guardarPuntos(@RequestParam String username,
