@@ -42,6 +42,16 @@
           border-radius: 6px;
         }
 
+        .contenedor-juego {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          margin-top: 20px;
+        }
+
+
        @media only screen and (max-width: 600px) {
           html, body {
             margin: 0;
@@ -189,8 +199,9 @@
       ctx.fillStyle = "black";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = "red";
-      ctx.fillRect(food.x, food.y, 20, 20);
+     ctx.font = "20px Arial";
+     ctx.fillText("🍎", food.x + 2, food.y + 18);
+
 
       let head = { ...snake[0] };
       if (direction === "UP") head.y -= 20;
