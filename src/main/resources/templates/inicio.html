@@ -78,8 +78,7 @@
 </nav>
 
 <div style="text-align: center; margin-top: 40px;">
-  <h1>🎮 Elige tu juego</h1>
-
+  <h1>Bienvenido, <span th:text="${usuario.username}">Jugador</span> 🎮 Elige tu juego</h1>
   <div style="display: flex; flex-direction: column; align-items: center;">
     <button class="boton" onclick="location.href='/juego'">🐍 Jugar Snake</button>
     <button class="boton" onclick="location.href='/juego2'">🧱 Jugar Arcanoid</button>
