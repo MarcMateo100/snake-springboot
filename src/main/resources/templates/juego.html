@@ -362,7 +362,7 @@
 
       // Ajusta solo la altura vertical del canvas
       canvas.width = window.innerWidth * 0.9;
-      canvas.height = window.innerHeight * 0.45;
+      canvas.height = Math.floor((window.innerHeight * 0.45) / 20) * 20;
     }
 
 
