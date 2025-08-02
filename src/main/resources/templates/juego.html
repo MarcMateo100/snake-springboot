@@ -360,12 +360,13 @@
     if (esMovil) {
       document.getElementById("botones-direccion").style.display = "block";
 
-      // Ajusta solo la altura vertical del canvas
-      canvas.width = window.innerWidth * 0.9;
-      canvas.height = Math.floor((window.innerHeight * 0.45) / 20) * 20;
+      // Ajusta ancho y alto a múltiplos de 20
+      const anchoCanvas = Math.floor((window.innerWidth * 0.9) / 20) * 20;
+      const altoCanvas = Math.floor((window.innerHeight * 0.45) / 20) * 20;
+
+      canvas.width = anchoCanvas;
+      canvas.height = altoCanvas;
     }
-
-
 
 </script>
 </body>
