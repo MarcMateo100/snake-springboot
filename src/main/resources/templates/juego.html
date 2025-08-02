@@ -228,36 +228,49 @@
       ctx.fillRect(snake[i].x, snake[i].y, 20, 20);
     }
 
-    // Dibuja la cola como triángulo orientado
-    const tail = snake[snake.length - 1];
-    ctx.fillStyle = "green";
-    ctx.beginPath();
+    if (snake.length > 1) {
+      const tail = snake[snake.length - 1];
+      const beforeTail = snake[snake.length - 2];
 
-    switch (direction) {
-      case "UP":
-        ctx.moveTo(tail.x + 10, tail.y + 20); // punta abajo
-        ctx.lineTo(tail.x, tail.y);           // izquierda arriba
-        ctx.lineTo(tail.x + 20, tail.y);      // derecha arriba
-        break;
-      case "DOWN":
-        ctx.moveTo(tail.x + 10, tail.y);      // punta arriba
-        ctx.lineTo(tail.x, tail.y + 20);      // izquierda abajo
-        ctx.lineTo(tail.x + 20, tail.y + 20); // derecha abajo
-        break;
-      case "LEFT":
-        ctx.moveTo(tail.x + 20, tail.y + 10); // punta derecha
-        ctx.lineTo(tail.x, tail.y);           // arriba izquierda
-        ctx.lineTo(tail.x, tail.y + 20);      // abajo izquierda
-        break;
-      case "RIGHT":
-        ctx.moveTo(tail.x, tail.y + 10);      // punta izquierda
-        ctx.lineTo(tail.x + 20, tail.y);      // arriba derecha
-        ctx.lineTo(tail.x + 20, tail.y + 20); // abajo derecha
-        break;
+      let tailDirection = "RIGHT";
+      if (beforeTail.x < tail.x) tailDirection = "LEFT";
+      else if (beforeTail.x > tail.x) tailDirection = "RIGHT";
+      else if (beforeTail.y < tail.y) tailDirection = "UP";
+      else if (beforeTail.y > tail.y) tailDirection = "DOWN";
+
+      ctx.fillStyle = "green";
+      ctx.beginPath();
+
+      switch (tailDirection) {
+        case "UP":
+          ctx.moveTo(tail.x + 10, tail.y + 20);
+          ctx.lineTo(tail.x, tail.y);
+          ctx.lineTo(tail.x + 20, tail.y);
+          break;
+        case "DOWN":
+          ctx.moveTo(tail.x + 10, tail.y);
+          ctx.lineTo(tail.x, tail.y + 20);
+          ctx.lineTo(tail.x + 20, tail.y + 20);
+          break;
+        case "LEFT":
+          ctx.moveTo(tail.x + 20, tail.y + 10);
+          ctx.lineTo(tail.x, tail.y);
+          ctx.lineTo(tail.x, tail.y + 20);
+          break;
+        case "RIGHT":
+          ctx.moveTo(tail.x, tail.y + 10);
+          ctx.lineTo(tail.x + 20, tail.y);
+          ctx.lineTo(tail.x + 20, tail.y + 20);
+          break;
+      }
+
+      ctx.closePath();
+      ctx.fill();
     }
 
-    ctx.closePath();
-    ctx.fill();
+
+
+
 
     // 🐍 Dibuja la cabeza con ojo y boca orientados
     const cabeza = snake[0];
