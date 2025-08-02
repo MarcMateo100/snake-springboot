@@ -259,6 +259,50 @@
     ctx.closePath();
     ctx.fill();
 
+    // 🐍 Dibuja la cabeza con ojo y boca orientados
+    const cabeza = snake[0];
+    ctx.fillStyle = "lime";
+    ctx.fillRect(cabeza.x, cabeza.y, 20, 20);
+
+    // 👁️ Dibuja el ojo
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    switch (direction) {
+      case "UP":
+        ctx.arc(cabeza.x + 10, cabeza.y + 4, 2, 0, Math.PI * 2); break;
+      case "DOWN":
+        ctx.arc(cabeza.x + 10, cabeza.y + 16, 2, 0, Math.PI * 2); break;
+      case "LEFT":
+        ctx.arc(cabeza.x + 4, cabeza.y + 10, 2, 0, Math.PI * 2); break;
+      case "RIGHT":
+        ctx.arc(cabeza.x + 16, cabeza.y + 10, 2, 0, Math.PI * 2); break;
+    }
+    ctx.fill();
+
+    // 👄 Dibuja la boca como línea
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    switch (direction) {
+      case "UP":
+        ctx.moveTo(cabeza.x + 6, cabeza.y + 2);
+        ctx.lineTo(cabeza.x + 14, cabeza.y + 2);
+        break;
+      case "DOWN":
+        ctx.moveTo(cabeza.x + 6, cabeza.y + 18);
+        ctx.lineTo(cabeza.x + 14, cabeza.y + 18);
+        break;
+      case "LEFT":
+        ctx.moveTo(cabeza.x + 2, cabeza.y + 6);
+        ctx.lineTo(cabeza.x + 2, cabeza.y + 14);
+        break;
+      case "RIGHT":
+        ctx.moveTo(cabeza.x + 18, cabeza.y + 6);
+        ctx.lineTo(cabeza.x + 18, cabeza.y + 14);
+        break;
+    }
+    ctx.stroke();
+
       if (
         head.x < 0 || head.x >= canvas.width ||
         head.y < 0 || head.y >= canvas.height ||
