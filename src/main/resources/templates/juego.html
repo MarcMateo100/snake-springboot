@@ -210,11 +210,14 @@
       snake.unshift(head);
 
       if (head.x === food.x && head.y === food.y) {
-        score++;
+        score=score + 100;
         document.getElementById("puntaje").textContent = "Puntaje: " + score;
+        const cols = canvas.width / 20;
+        const rows = canvas.height / 20;
+
         food = {
-          x: Math.floor(Math.random() * 20) * 20,
-          y: Math.floor(Math.random() * 20) * 20
+          x: Math.floor(Math.random() * cols) * 20,
+          y: Math.floor(Math.random() * rows) * 20
         };
       } else {
         snake.pop();
