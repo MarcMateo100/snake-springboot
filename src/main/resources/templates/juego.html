@@ -200,8 +200,9 @@
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
      ctx.font = "20px Arial";
-     ctx.fillText("🍎", food.x + 2, food.y + 18);
-
+     ctx.textAlign = "center";
+     ctx.textBaseline = "middle";
+     ctx.fillText("🍎", food.x + 10, food.y + 10);
 
       let head = { ...snake[0] };
       if (direction === "UP") head.y -= 20;
@@ -221,8 +222,42 @@
         snake.pop();
       }
 
-      ctx.fillStyle = "lime";
-      snake.forEach(part => ctx.fillRect(part.x, part.y, 20, 20));
+      // Dibuja todos los segmentos menos el último
+    ctx.fillStyle = "lime";
+    for (let i = 0; i < snake.length - 1; i++) {
+      ctx.fillRect(snake[i].x, snake[i].y, 20, 20);
+    }
+
+    // Dibuja la cola como triángulo orientado
+    const tail = snake[snake.length - 1];
+    ctx.fillStyle = "green";
+    ctx.beginPath();
+
+    switch (direction) {
+      case "UP":
+        ctx.moveTo(tail.x + 10, tail.y + 20); // punta abajo
+        ctx.lineTo(tail.x, tail.y);           // izquierda arriba
+        ctx.lineTo(tail.x + 20, tail.y);      // derecha arriba
+        break;
+      case "DOWN":
+        ctx.moveTo(tail.x + 10, tail.y);      // punta arriba
+        ctx.lineTo(tail.x, tail.y + 20);      // izquierda abajo
+        ctx.lineTo(tail.x + 20, tail.y + 20); // derecha abajo
+        break;
+      case "LEFT":
+        ctx.moveTo(tail.x + 20, tail.y + 10); // punta derecha
+        ctx.lineTo(tail.x, tail.y);           // arriba izquierda
+        ctx.lineTo(tail.x, tail.y + 20);      // abajo izquierda
+        break;
+      case "RIGHT":
+        ctx.moveTo(tail.x, tail.y + 10);      // punta izquierda
+        ctx.lineTo(tail.x + 20, tail.y);      // arriba derecha
+        ctx.lineTo(tail.x + 20, tail.y + 20); // abajo derecha
+        break;
+    }
+
+    ctx.closePath();
+    ctx.fill();
 
       if (
         head.x < 0 || head.x >= canvas.width ||
