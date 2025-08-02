@@ -120,12 +120,7 @@
           }
         }
 
-
-
-
-
     </style>
-
 </head>
 <body>
 
@@ -138,7 +133,6 @@
 </nav>
 
 <div class="contenedor-juego">
-    <p id="puntaje">Points: 0</p>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
 
     <div id="botones-direccion">
@@ -218,7 +212,7 @@
       snake.unshift(head);
 
       if (head.x === food.x && head.y === food.y) {
-        score=score + 100;
+        score++;
         document.getElementById("puntaje").textContent = "Puntaje: " + score;
         const cols = canvas.width / 20;
         const rows = canvas.height / 20;
