@@ -4,7 +4,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Juego Snake</title>
     <link rel="stylesheet" href="/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
 
         html, body {
@@ -273,41 +272,6 @@
       ctx.fill();
     }
 
-    function reset() {
-      snake = [{ x: 200, y: 200 }];
-      direction = "RIGHT";
-      nextDirection = "RIGHT";
-      score = 0;
-      food = generarComida(); // 🍎 Reinicia la manzana
-      document.getElementById("puntaje").textContent = "Puntaje: 0";
-      clearInterval(intervalo);
-      intervalo = null;
-    }
-
-    function mostrarCuentaAtras(callback) {
-      const numeros = ["3", "2", "1"];
-      let i = 0;
-
-      const intervaloCuenta = setInterval(() => {
-        ctx.fillStyle = "black";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.font = "bold 80px 'Press Start 2P', monospace"; // 🕹️ Estilo retro
-        ctx.fillStyle = "cyan";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(numeros[i], canvas.width / 2, canvas.height / 2);
-
-        i++;
-        if (i >= numeros.length) {
-          clearInterval(intervaloCuenta);
-          setTimeout(() => {
-            callback(); // 🔁 Inicia el juego
-          }, 1000);
-        }
-      }, 1000);
-    }
-
 
 
     function generarComida() {
@@ -404,9 +368,7 @@
     function iniciarJuego() {
       if (intervalo === null) {
         food = generarComida();
-        mostrarCuentaAtras(() => {
-          intervalo = setInterval(draw, 100);
-        });
+        intervalo = setInterval(draw, 100); // 🔄 Más rápido
       }
     }
 
