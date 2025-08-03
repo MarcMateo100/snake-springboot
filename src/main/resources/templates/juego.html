@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Juego Snake</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
 
         html, body {
@@ -147,7 +148,7 @@
     </div>
 
     <div style="margin-top: 20px;">
-        <button onclick="iniciarJuego()" style="
+        <button id="btn-empezar" style="
         background-color: #4CAF50;
         color: white;
         padding: 10px 25px;
@@ -155,11 +156,18 @@
         border: none;
         border-radius: 4px;
         cursor: pointer;">
-            Empezar partida ▶️
-        </button>
-    </div>
+                Empezar partida ▶️
+            </button>
+        </div>
+
 </div>
 <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const boton = document.getElementById("btn-empezar");
+      boton.addEventListener("click", iniciarJuego);
+    });
+
+
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
@@ -272,6 +280,29 @@
       ctx.fill();
     }
 
+    function mostrarCuentaAtras(callback) {
+      const numeros = ["3", "2", "1"];
+      let i = 0;
+
+      const intervaloCuenta = setInterval(() => {
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.font = "bold 80px 'Press Start 2P', monospace"; // 🕹️ Estilo retro
+        ctx.fillStyle = "cyan";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(numeros[i], canvas.width / 2, canvas.height / 2);
+
+        i++;
+        if (i >= numeros.length) {
+          clearInterval(intervaloCuenta);
+          setTimeout(() => {
+            callback(); // 🔁 Inicia el juego
+          }, 1000);
+        }
+      }, 1000);
+    }
 
 
     function generarComida() {
@@ -368,9 +399,12 @@
     function iniciarJuego() {
       if (intervalo === null) {
         food = generarComida();
-        intervalo = setInterval(draw, 100); // 🔄 Más rápido
+        mostrarCuentaAtras(() => {
+          intervalo = setInterval(draw, 100);
+        });
       }
     }
+
 
     const esMovil = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if (esMovil) {
