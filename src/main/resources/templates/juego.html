@@ -304,20 +304,6 @@
       }, 1000);
     }
 
-
-    function generarComida() {
-      const cols = canvas.width / 20;
-      const rows = canvas.height / 20;
-
-      return {
-        x: Math.floor(Math.random() * cols) * 20,
-        y: Math.floor(Math.random() * rows) * 20
-      };
-    }
-
-
-
-
     // 🐍 Dibuja la cabeza con ojo y boca orientados
     const cabeza = snake[0];
     ctx.fillStyle = "lime";
@@ -381,6 +367,16 @@
       document.getElementById("puntaje").textContent = "Puntaje: 0";
       clearInterval(intervalo);
       intervalo = null;
+    }
+
+    function generarComida() {
+      const cols = canvas.width / 20;
+      const rows = canvas.height / 20;
+
+      return {
+        x: Math.floor(Math.random() * cols) * 20,
+        y: Math.floor(Math.random() * rows) * 20
+      };
     }
 
     function enviarPuntaje(puntos) {
