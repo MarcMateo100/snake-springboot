@@ -5,6 +5,7 @@
     <title>Juego Snake</title>
     <link rel="stylesheet" href="/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
     <style>
 
         html, body {
@@ -134,6 +135,8 @@
 </nav>
 
 <div class="contenedor-juego">
+    <div id="puntaje">Puntaje: 0</div>
+
     <canvas id="gameCanvas" width="400" height="400"></canvas>
 
     <div id="botones-direccion">
@@ -147,148 +150,151 @@
         </div>
     </div>
 
-    <div style="margin-top: 20px;">
-        <button id="btn-empezar" style="
-        background-color: #4CAF50;
-        color: white;
-        padding: 10px 25px;
-        font-size: 16px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;">
-                Empezar partida ▶️
-            </button>
-        </div>
+
+        <button id="btn-empezar" style="display:block; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);
+font-family:'Press Start 2P', monospace; font-size:16px; padding:10px 20px; background-color:cyan; border:none; color:black; cursor:pointer;">
+            ▶️ Empezar partida
+        </button>
+
+        <button id="btn-reintentar" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);
+font-family:'Press Start 2P', monospace; font-size:16px; padding:10px 20px; background-color:cyan; border:none; color:black; cursor:pointer;">
+            🔁 Reintentar
+        </button>
+
+
 
 </div>
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const boton = document.getElementById("btn-empezar");
-      boton.addEventListener("click", iniciarJuego);
+   document.addEventListener("DOMContentLoaded", () => {
+     const boton = document.getElementById("btn-empezar");
+     boton.addEventListener("click", iniciarJuego);
+   });
+
+   document.getElementById("btn-reintentar").addEventListener("click", () => {
+      clearInterval(intervalo); // 🔁 Detiene cualquier juego activo
+      intervalo = null;
+      document.getElementById("btn-reintentar").style.display = "none";
+      iniciarJuego(); // ✅ Esto ya incluye la cuenta atrás
     });
 
 
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
 
-    let snake = [{ x: 200, y: 200 }];
-    let direction = "RIGHT";
-    let nextDirection = "RIGHT"; // 🆕 Buffer para dirección
-    let food = { x: 100, y: 100 };
-    let score = 0;
-    let username = "[[${#strings.escapeJavaScript(usuario.username)}]]";
+   const canvas = document.getElementById("gameCanvas");
+   const ctx = canvas.getContext("2d");
+   canvas.width = 400;
+   canvas.height = 400;
 
-    // 🎮 Escucha de teclado
-    document.addEventListener("keydown", e => {
-      const dirMap = {
-        ArrowUp: "UP",
-        ArrowDown: "DOWN",
-        ArrowLeft: "LEFT",
-        ArrowRight: "RIGHT"
-      };
-      const nueva = dirMap[e.key];
-      if (nueva) cambiarDireccion(nueva);
-    });
+   let snake = [{ x: 200, y: 200 }];
+   let direction = "RIGHT";
+   let nextDirection = "RIGHT";
+   let food = generarComida();
+   let score = 0;
+   let intervalo = null;
 
-    // 🎯 Función segura para cambiar dirección
-    function cambiarDireccion(nuevaDir) {
-      const opuestos = {
-        UP: "DOWN", DOWN: "UP",
-        LEFT: "RIGHT", RIGHT: "LEFT"
-      };
-      if (opuestos[direction] !== nuevaDir) {
-        nextDirection = nuevaDir;
-      }
-    }
+   function generarComida() {
+     const cols = canvas.width / 20;
+     const rows = canvas.height / 20;
+     return {
+       x: Math.floor(Math.random() * cols) * 20,
+       y: Math.floor(Math.random() * rows) * 20
+     };
+   }
 
-    function draw() {
-      direction = nextDirection; // ✅ Aplica justo antes del movimiento
+   document.addEventListener("keydown", e => {
+     const dirMap = {
+       ArrowUp: "UP",
+       ArrowDown: "DOWN",
+       ArrowLeft: "LEFT",
+       ArrowRight: "RIGHT"
+     };
+     const nueva = dirMap[e.key];
+     if (nueva) cambiarDireccion(nueva);
+   });
 
-      ctx.fillStyle = "black";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+   function cambiarDireccion(nuevaDir) {
+     const opuestos = {
+       UP: "DOWN", DOWN: "UP",
+       LEFT: "RIGHT", RIGHT: "LEFT"
+     };
+     if (opuestos[direction] !== nuevaDir) {
+       nextDirection = nuevaDir;
+     }
+   }
 
+   function draw() {
+     direction = nextDirection;
+
+     ctx.fillStyle = "black";
+     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+     // Dibuja la comida
      ctx.font = "20px Arial";
      ctx.textAlign = "center";
      ctx.textBaseline = "middle";
      ctx.fillText("🍎", food.x + 10, food.y + 10);
 
-      let head = { ...snake[0] };
-      if (direction === "UP") head.y -= 20;
-      if (direction === "DOWN") head.y += 20;
-      if (direction === "LEFT") head.x -= 20;
-      if (direction === "RIGHT") head.x += 20;
-      snake.unshift(head);
+     // Mueve la serpiente
+     let head = { ...snake[0] };
+     if (direction === "UP") head.y -= 20;
+     if (direction === "DOWN") head.y += 20;
+     if (direction === "LEFT") head.x -= 20;
+     if (direction === "RIGHT") head.x += 20;
+     snake.unshift(head);
 
-      if (head.x === food.x && head.y === food.y) {
-        score++;
-        document.getElementById("puntaje").textContent = "Puntaje: " + score;
-        food = generarComida();
-        const cols = canvas.width / 20;
-        const rows = canvas.height / 20;
+     // Verifica si comió la comida
+     if (head.x === food.x && head.y === food.y) {
+       score++;
+       document.getElementById("puntaje").textContent = "Puntaje: " + score;
+       food = generarComida(); // 🍎 Genera nueva comida
+     } else {
+       snake.pop();
+     }
 
-        food = {
-          x: Math.floor(Math.random() * cols) * 20,
-          y: Math.floor(Math.random() * rows) * 20
-        };
-      } else {
-        snake.pop();
-      }
+     // Dibuja la serpiente
+     ctx.fillStyle = "lime";
+     for (let segment of snake) {
+       ctx.fillRect(segment.x, segment.y, 20, 20);
+     }
 
-      // Dibuja todos los segmentos menos el último
-    ctx.fillStyle = "lime";
-    for (let i = 0; i < snake.length - 1; i++) {
-      ctx.fillRect(snake[i].x, snake[i].y, 20, 20);
+     // Verifica colisiones
+     if (
+      head.x < 0 || head.x >= canvas.width ||
+      head.y < 0 || head.y >= canvas.height ||
+      snake.slice(1).some(p => p.x === head.x && p.y === head.y)
+    ) {
+      clearInterval(intervalo);
+      mostrarBotonReintentar(); // 👇 Nueva función
     }
 
-    if (snake.length > 1) {
-      const tail = snake[snake.length - 1];
-      const beforeTail = snake[snake.length - 2];
+   }
 
-      let tailDirection = "RIGHT";
-      if (beforeTail.x < tail.x) tailDirection = "LEFT";
-      else if (beforeTail.x > tail.x) tailDirection = "RIGHT";
-      else if (beforeTail.y < tail.y) tailDirection = "UP";
-      else if (beforeTail.y > tail.y) tailDirection = "DOWN";
-
-      ctx.fillStyle = "green";
-      ctx.beginPath();
-
-      switch (tailDirection) {
-        case "UP":
-          ctx.moveTo(tail.x + 10, tail.y + 20);
-          ctx.lineTo(tail.x, tail.y);
-          ctx.lineTo(tail.x + 20, tail.y);
-          break;
-        case "DOWN":
-          ctx.moveTo(tail.x + 10, tail.y);
-          ctx.lineTo(tail.x, tail.y + 20);
-          ctx.lineTo(tail.x + 20, tail.y + 20);
-          break;
-        case "LEFT":
-          ctx.moveTo(tail.x + 20, tail.y + 10);
-          ctx.lineTo(tail.x, tail.y);
-          ctx.lineTo(tail.x, tail.y + 20);
-          break;
-        case "RIGHT":
-          ctx.moveTo(tail.x, tail.y + 10);
-          ctx.lineTo(tail.x + 20, tail.y);
-          ctx.lineTo(tail.x + 20, tail.y + 20);
-          break;
-      }
-
-      ctx.closePath();
-      ctx.fill();
+   function reset() {
+      snake = [{ x: 200, y: 200 }];
+      direction = "RIGHT";
+      nextDirection = "RIGHT";
+      score = 0;
+      food = generarComida();
+      document.getElementById("puntaje").textContent = "Puntaje: 0";
+      intervalo = null; // 🔁 Permite reiniciar el juego
     }
 
-    function mostrarCuentaAtras(callback) {
+
+   function mostrarCuentaAtras(callback) {
       const numeros = ["3", "2", "1"];
       let i = 0;
 
+      const coloresFondo = ["#000", "#111", "#222", "#333", "#444", "#555", "#666", "#777", "#888", "#999", "#aaa", "#bbb", "#ccc", "#ddd", "#eee"];
+      let colorIndex = 0;
+
       const intervaloCuenta = setInterval(() => {
-        ctx.fillStyle = "black";
+        // Fondo parpadeante
+        ctx.fillStyle = "black"; // Fondo fijo
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        ctx.font = "bold 80px 'Press Start 2P', monospace"; // 🕹️ Estilo retro
+        colorIndex++;
+
+        // Texto retro
+        ctx.font = "bold 80px 'Press Start 2P', monospace";
         ctx.fillStyle = "cyan";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
@@ -298,103 +304,34 @@
         if (i >= numeros.length) {
           clearInterval(intervaloCuenta);
           setTimeout(() => {
-            callback(); // 🔁 Inicia el juego
+            callback();
           }, 1000);
         }
       }, 1000);
     }
 
-    // 🐍 Dibuja la cabeza con ojo y boca orientados
-    const cabeza = snake[0];
-    ctx.fillStyle = "lime";
-    ctx.fillRect(cabeza.x, cabeza.y, 20, 20);
+    function mostrarBotonReintentar() {
+      document.getElementById("btn-reintentar").style.display = "block";
+      document.getElementById("btn-empezar").style.display = "none"; // 👈 Asegura que no se vea
 
-    // 👁️ Dibuja el ojo
-    ctx.fillStyle = "white";
-    ctx.beginPath();
-    switch (direction) {
-      case "UP":
-        ctx.arc(cabeza.x + 10, cabeza.y + 4, 2, 0, Math.PI * 2); break;
-      case "DOWN":
-        ctx.arc(cabeza.x + 10, cabeza.y + 16, 2, 0, Math.PI * 2); break;
-      case "LEFT":
-        ctx.arc(cabeza.x + 4, cabeza.y + 10, 2, 0, Math.PI * 2); break;
-      case "RIGHT":
-        ctx.arc(cabeza.x + 16, cabeza.y + 10, 2, 0, Math.PI * 2); break;
-    }
-    ctx.fill();
-
-    // 👄 Dibuja la boca como línea
-    ctx.strokeStyle = "red";
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    switch (direction) {
-      case "UP":
-        ctx.moveTo(cabeza.x + 6, cabeza.y + 2);
-        ctx.lineTo(cabeza.x + 14, cabeza.y + 2);
-        break;
-      case "DOWN":
-        ctx.moveTo(cabeza.x + 6, cabeza.y + 18);
-        ctx.lineTo(cabeza.x + 14, cabeza.y + 18);
-        break;
-      case "LEFT":
-        ctx.moveTo(cabeza.x + 2, cabeza.y + 6);
-        ctx.lineTo(cabeza.x + 2, cabeza.y + 14);
-        break;
-      case "RIGHT":
-        ctx.moveTo(cabeza.x + 18, cabeza.y + 6);
-        ctx.lineTo(cabeza.x + 18, cabeza.y + 14);
-        break;
-    }
-    ctx.stroke();
-
-      if (
-        head.x < 0 || head.x >= canvas.width ||
-        head.y < 0 || head.y >= canvas.height ||
-        snake.slice(1).some(p => p.x === head.x && p.y === head.y)
-      ) {
-        alert("¡Game Over! Tu puntaje fue: " + score);
-        enviarPuntaje(score);
-        reset();
-      }
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = "bold 30px 'Press Start 2P', monospace";
+      ctx.fillStyle = "red";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 40);
+      ctx.fillStyle = "white";
+      ctx.font = "16px 'Press Start 2P', monospace";
+      ctx.fillText("Puntaje: " + score, canvas.width / 2, canvas.height / 2 + 10);
     }
 
-    function reset() {
-      snake = [{ x: 200, y: 200 }];
-      direction = "RIGHT";
-      nextDirection = "RIGHT";
-      score = 0;
-      document.getElementById("puntaje").textContent = "Puntaje: 0";
-      clearInterval(intervalo);
-      intervalo = null;
-    }
 
-    function generarComida() {
-      const cols = canvas.width / 20;
-      const rows = canvas.height / 20;
 
-      return {
-        x: Math.floor(Math.random() * cols) * 20,
-        y: Math.floor(Math.random() * rows) * 20
-      };
-    }
-
-    function enviarPuntaje(puntos) {
-      fetch("/guardarPuntos", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: "username=" + encodeURIComponent(username) + "&puntuacion=" + puntos
-      })
-      .then(res => res.text())
-      .then(msg => console.log("Respuesta del servidor: " + msg))
-      .catch(err => console.error("Error al enviar puntuación:", err));
-    }
-
-    let intervalo = null;
-
-    function iniciarJuego() {
+   function iniciarJuego() {
       if (intervalo === null) {
-        food = generarComida();
+        document.getElementById("btn-empezar").style.display = "none"; // 👈 Oculta botón
+        reset();
         mostrarCuentaAtras(() => {
           intervalo = setInterval(draw, 100);
         });
@@ -402,18 +339,7 @@
     }
 
 
-    const esMovil = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (esMovil) {
-      document.getElementById("botones-direccion").style.display = "block";
-
-      // Ajusta ancho y alto a múltiplos de 20
-      const anchoCanvas = Math.floor((window.innerWidth * 0.9) / 20) * 20;
-      const altoCanvas = Math.floor((window.innerHeight * 0.45) / 20) * 20;
-
-      canvas.width = anchoCanvas;
-      canvas.height = altoCanvas;
-    }
-
 </script>
+
 </body>
 </html>
