@@ -66,6 +66,24 @@
 <p id="banderasRestantes">Banderas restantes: 10</p>
 <button onclick="toggleBandera()" id="modoBanderaBtn">🚩 Modo bandera</button>
 
+<div id="popupVictoria" style="
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #4CAF50;
+  color: white;
+  padding: 30px;
+  font-size: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #00ffcc;
+  z-index: 1000;
+  font-family: 'Press Start 2P', monospace;
+">
+    🎉 ¡Has ganado!
+</div>
+
 
 <script>
     const canvas = document.getElementById("canvas");
@@ -98,6 +116,7 @@
 
 
     function iniciarJuego() {
+          document.getElementById("popupVictoria").style.display = "none";
           juegoTerminado = false;
           tablero = Array(filas).fill().map(() => Array(columnas).fill(0));
           revelado = Array(filas).fill().map(() => Array(columnas).fill(false));
@@ -138,18 +157,21 @@
         }
 
     function colocarBandera(f, c) {
-      if (revelado[f][c]) return;
+          if (revelado[f][c]) return;
 
-      if (!banderas[f][c] && banderasRestantes > 0) {
-        banderas[f][c] = true;
-        banderasRestantes--;
-      } else if (banderas[f][c]) {
-        banderas[f][c] = false;
-        banderasRestantes++;
-      }
+          if (!banderas[f][c] && banderasRestantes > 0) {
+            banderas[f][c] = true;
+            banderasRestantes--;
+          } else if (banderas[f][c]) {
+            banderas[f][c] = false;
+            banderasRestantes++;
+          }
 
-      document.getElementById("banderasRestantes").textContent = "Banderas restantes: " + banderasRestantes;
-    }
+          document.getElementById("banderasRestantes").textContent = "Banderas restantes: " + banderasRestantes;
+
+          verificarVictoria(); // ✅ Añadido aquí
+        }
+
 
 
    function dibujarTablero() {
@@ -185,6 +207,9 @@
       }
     }
 
+    function mostrarPopupVictoria() {
+      document.getElementById("popupVictoria").style.display = "block";
+    }
 
     canvas.addEventListener("click", e => {
       if (juegoTerminado) return;
@@ -201,6 +226,23 @@
       }
       dibujarTablero();
     });
+
+  function verificarVictoria() {
+      let minasCorrectamenteMarcadas = 0;
+
+      for (let f = 0; f < filas; f++) {
+        for (let c = 0; c < columnas; c++) {
+          if (tablero[f][c] === -1 && banderas[f][c]) {
+            minasCorrectamenteMarcadas++;
+          }
+        }
+      }
+
+      if (minasCorrectamenteMarcadas === minas && banderasRestantes === 0) {
+        mostrarPopupVictoria();
+        juegoTerminado = true;
+      }
+    }
 
 
     function revelar(f, c) {
@@ -222,6 +264,7 @@
       }
     }
 </script>
+
 
 </body>
 </html>

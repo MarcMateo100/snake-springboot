@@ -4,88 +4,344 @@
   <meta charset="UTF-8">
   <title>Selector de Juegos</title>
   <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
-    canvas {
-      border: 2px solid #333;
-      background-color: #000;
-      margin-top: 20px;
-    }
-    #puntaje {
-      font-size: 18px;
-      margin-top: 10px;
-    }
-    #botones-direccion {
-      margin-top: 20px;
-      display: none;
-    }
-    .boton-dir {
-      font-size: 24px;
-      padding: 10px 20px;
-      margin: 5px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 4px;
-    }
 
-    @media only screen and (max-width: 600px) {
-      .boton {
-        width: 90vw;             /* casi toda la pantalla */
-        font-size: 28px;         /* más grande */
-        padding: 20px 0;
-        margin: 10px auto;
-        display: block;
-      }
-
-      h1 {
-        font-size: 22px;
-        padding: 10px;
-      }
-
-      body {
-        padding-top: 30px;
-      }
-    }
-
-    .boton {
-      display: inline-block;
-      width: 250px; /* ajusta según el más largo */
+    body {
+      background: radial-gradient(circle at center, #000 0%, #111 100%);
+      background-size: cover;
+      color: yellow;
+      font-family: 'Press Start 2P', monospace;
       text-align: center;
-      margin: 20px;
-      padding: 15px 30px;
-      font-size: 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      color: white;
-      background-color: #007BFF;
-      transition: background-color 0.3s ease;
+      margin-top: 60px;
+      overflow: hidden;
+      box-shadow: inset 0 0 40px #00ffcc;
+
     }
 
-    .boton:hover {
-      background-color: #0056b3;
+
+   h1 {
+     font-size: 24px;
+     margin-bottom: 40px;
+     text-transform: uppercase;
+     letter-spacing: 2px;
+   }
+
+   nav {
+    background: linear-gradient(90deg, #cc66ff, #ffcc00, #00ffcc);
+    background-size: 600% 100%;
+    animation: scrollBackground 10s linear infinite;
+    padding: 12px;
+    border-bottom: 4px solid #ff0044;
+    box-shadow: 0 0 10px #ff0044;
+    font-family: 'Press Start 2P', monospace;
+  }
+
+  nav a {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  color: #00ffcc;
+  text-shadow: 0 0 3px #00ffcc, 0 0 6px #00ffcc;
+  letter-spacing: 1px;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: #ff0044;
+  text-shadow: 0 0 5px #ff0044;
+  animation: pulseText 1s infinite;
+}
+
+@keyframes pulseText {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+
+  @keyframes scrollBackground {
+    0% { background-position: 0% 0; }
+    100% { background-position: 100% 0; }
+  }
+
+nav a {
+  background-color: #000;
+  color: #00ffcc;
+  padding: 10px 20px;
+  margin: 0 10px;
+  border: 2px solid #00ffcc;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  box-shadow: 0 0 5px #00ffcc;
+  transition: transform 0.2s ease;
+}
+
+nav a:hover {
+  transform: scale(1.1);
+  background-color: #111;
+  box-shadow: 0 0 10px #00ffcc;
+}
+
+
+
+   #menu {
+     list-style: none;
+     padding: 0;
+     margin: 0 auto;
+     display: inline-block;
+     text-align: left;
+   }
+
+   .menu-opcion {
+     font-size: 24px;
+     margin: 20px 0;
+     padding-left: 30px;
+     position: relative;
+     cursor: pointer;
+     transition: color 0.3s ease;
+   }
+
+   .menu-opcion::before {
+     content: '';
+     position: absolute;
+     left: 0;
+     color: yellow;
+   }
+
+   .menu-opcion.selected {
+     color: red;
+   }
+
+   .menu-opcion.selected::before {
+      content: '▶';
+      color: red;
+      animation: blink 0.8s infinite;
     }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+
+ .arcade-frame {
+    border: 4px solid #cc66ff;
+    box-shadow: 0 0 20px #cc66ff, 0 0 40px #cc66ff inset;
+    animation: pulseNeon 2s infinite;
+  }
+
+  @keyframes pulseNeon {
+    0%, 100% { box-shadow: 0 0 20px #cc66ff, 0 0 40px #cc66ff inset; }
+    50% { box-shadow: 0 0 30px #ff99ff, 0 0 60px #ff99ff inset; }
+  }
+
+   .pixel-triangle {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 15px solid #fff; /* color del triángulo */
+    image-rendering: pixelated;
+    transform: scale(2); /* agranda el triángulo para que se vea más pixelado */
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.02),
+      rgba(255,255,255,0.02) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+    pointer-events: none;
+    z-index: 999;
+    animation: flicker 1s infinite;
+  }
+
+  @keyframes flicker {
+    0%, 100% { opacity: 0.1; }
+    50% { opacity: 0.2; }
+  }
+
+
+       canvas {
+        image-rendering: pixelated;
+         border: 2px solid #333;
+         background-color: #000;
+         margin-top: 20px;
+       }
+       #puntaje {
+         font-size: 18px;
+         margin-top: 10px;
+       }
+       #botones-direccion {
+         margin-top: 20px;
+         display: none;
+       }
+       .boton-dir {
+         font-size: 24px;
+         padding: 10px 20px;
+         margin: 5px;
+         background-color: #4CAF50;
+         color: white;
+         border: none;
+         border-radius: 4px;
+       }
+
+       @media only screen and (max-width: 600px) {
+         .boton {
+           width: 90vw;             /* casi toda la pantalla */
+           font-size: 28px;         /* más grande */
+           padding: 20px 0;
+           margin: 10px auto;
+           display: block;
+         }
+
+         h1 {
+           font-size: 22px;
+           padding: 10px;
+         }
+
+         body {
+           padding-top: 30px;
+         }
+       }
+
+       .boton {
+         display: inline-block;
+         width: 250px; /* ajusta según el más largo */
+         text-align: center;
+         margin: 20px;
+         padding: 15px 30px;
+         font-size: 20px;
+         border: none;
+         border-radius: 8px;
+         cursor: pointer;
+         color: white;
+         background-color: #007BFF;
+         transition: background-color 0.3s ease;
+       }
+
+       .boton:hover {
+         background-color: #0056b3;
+       }
   </style>
 </head>
 <body>
 
-<nav style="background-color: #333; padding: 10px;">
-  <div style="display: flex; justify-content: center; gap: 30px;">
-    <a th:href="@{/inicio}" style="color: white; text-decoration: none; font-weight: bold;">🎮 Juego</a>
-    <a th:href="@{/ranking}" style="color: white; text-decoration: none; font-weight: bold;">🏆 Ranking</a>
-    <a th:href="@{/logout}" style="color: white; text-decoration: none; font-weight: bold;">🔒 Cerrar sesión</a>
+<nav style="background-color: #333; padding: 10px; position: fixed; top: 0; width: 100%; z-index: 1000;">
+  <div style="display: flex; justify-content: center; gap: 90px;">
+    <a th:href="@{/inicio}" style="color: white; text-decoration: none; font-weight: bold;"> Juego</a>
+    <a th:href="@{/ranking}" style="color: white; text-decoration: none; font-weight: bold;"> Ranking</a>
+    <a th:href="@{/logout}" style="color: white; text-decoration: none; font-weight: bold;"> Cerrar sesión</a>
   </div>
 </nav>
 
-<div style="text-align: center; margin-top: 40px;">
-  <h1>Bienvenido, <span th:text="${usuario.username}">Jugador</span>.  Elige tu juego 🎮</h1>
-  <div style="display: flex; flex-direction: column; align-items: center;">
-    <button class="boton" onclick="location.href='/juego'">🐍 Jugar Snake</button>
-    <button class="boton" onclick="location.href='/juego2'">🧱 Jugar Arcanoid</button>
-    <button class="boton" onclick="location.href='/juego3'">💣 Jugar Buscaminas</button>
-    <button class="boton" onclick="location.href='/juego4'">🏓 Jugar Pong</button>
-  </div>
+
+
+<div class="arcade-frame">
+  <h1>¡Bienvenido, <span th:text="${usuario.username}">Jugador</span>! Elige tu juego</h1>
+  <ul id="menu">
+    <li class="menu-opcion selected" data-url="/juego">🐍 Snake</li>
+    <li class="menu-opcion" data-url="/juego2">🧱 Arcanoid</li>
+    <li class="menu-opcion" data-url="/juego3">💣 Buscaminas</li>
+    <li class="menu-opcion" data-url="/juego4">🏓 Pong</li>
+  </ul>
 </div>
+
+<button onclick="desactivarMusica()">🔊 Desactivar música</button>
+
+<audio id="selectSound" src="select.mp3"></audio>
+<audio id="selectSound2" src="select2.mp3"></audio>
+<audio id="bgMusic" src="/music.mp3" autoplay loop muted></audio>
+
+
+
+<script>
+  const opciones = document.querySelectorAll('.menu-opcion');
+  let seleccion = 0;
+
+  function actualizarSeleccion() {
+    opciones.forEach((opcion, i) => {
+      opcion.classList.toggle('selected', i === seleccion);
+    });
+  }
+
+ let musicaActivada = false;
+
+  document.addEventListener('keydown', (e) => {
+    if (!musicaActivada) {
+      music.muted = false;
+      music.play();
+      musicaActivada = true;
+    }
+
+    if (e.key === 'ArrowDown') {
+      seleccion = (seleccion + 1) % opciones.length;
+      actualizarSeleccion();
+      sonido.currentTime = 0;
+      sonido.play();
+    } else if (e.key === 'ArrowUp') {
+      seleccion = (seleccion - 1 + opciones.length) % opciones.length;
+      actualizarSeleccion();
+      sonido.currentTime = 0;
+      sonido.play();
+    } else if (e.key === 'Enter') {
+      sonido.currentTime = 0;
+      sonido.play();
+      setTimeout(() => {
+        const url = opciones[seleccion].dataset.url;
+        if (url) location.href = url;
+      }, 300);
+    }
+  });
+
+
+  const sonido = document.getElementById("selectSound");
+  const sonido2 = document.getElementById("selectSound2");
+  const music = document.getElementById("bgMusic");
+
+    opciones.forEach((opcion, i) => {
+   opcion.addEventListener('click', () => {
+      seleccion = i;
+      actualizarSeleccion();
+      sonido2.currentTime = 0;
+      sonido2.play();
+
+      const music = document.getElementById("bgMusic");
+      if (music.paused) {
+        music.play();
+      }
+
+      setTimeout(() => {
+        const url = opcion.dataset.url;
+        if (url) location.href = url;
+      }, 300);
+    });
+
+  });
+
+
+  function desactivarMusica() {
+  const music = document.getElementById("bgMusic");
+  music.muted = true;
+  }
+
+  function activarMusica() {
+  const music = document.getElementById("bgMusic");
+  music.muted = false;
+  music.play();
+}
+
+
+  actualizarSeleccion();
+
+
+</script>
 
 </body>
 </html>

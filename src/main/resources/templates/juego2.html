@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
+<head >
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <title>Arcanoid Clásico</title>
     <style>
@@ -11,11 +12,10 @@
           text-align: center;
         }
         canvas {
-          background-color: #000;
-          border: 3px solid #4CAF50;
-          display: block;
-          margin: 20px auto;
+          background: radial-gradient(circle at center, #000 60%, #111 100%);
+          border: 3px solid #00ffcc;
         }
+
         #controles {
           margin-top: 15px;
           display: none; /* Oculto por defecto */
@@ -30,6 +30,16 @@
           border: none;
           border-radius: 5px;
         }
+
+        #puntaje {
+          font-family: 'Press Start 2P', monospace;
+          color: #cc66ff;
+          text-shadow: 0 0 5px #cc66ff;
+          font-size: 16px;
+          margin-top: 20px;
+        }
+
+
     </style>
 </head>
 <body>
@@ -43,6 +53,7 @@
 </nav>
 
 <h1>🧱 Arcanoid Clásico</h1>
+<div id="puntaje">Puntaje: 0</div>
 <canvas id="canvas" width="480" height="320"></canvas>
 <div id="controles">
     <button onclick="moverIzquierda()">⬅️</button>
@@ -77,6 +88,7 @@
     let paddleHeight = 10;
     let paddleWidth = 75;
     let paddleX = (canvas.width - paddleWidth) / 2;
+    let paddleY = canvas.height - paddleHeight - 20;
 
     let rightPressed = false;
     let leftPressed = false;
@@ -87,7 +99,9 @@
     let brickHeight = 15;
     let brickPadding = 8;
     let brickOffsetTop = 30;
-    let brickOffsetLeft = 30;
+    let totalBricksWidth = brickColumnCount * brickWidth + (brickColumnCount - 1) * brickPadding;
+    let brickOffsetLeft = (canvas.width - totalBricksWidth) / 2;
+
 
     let score = 0;
 
@@ -127,6 +141,7 @@
               dy = -dy;
               b.status = 0;
               score++;
+              document.getElementById("puntaje").textContent = "Puntaje: " + score;
               if(score === brickRowCount * brickColumnCount) {
                 alert("🎉 ¡Ganaste!");
                 document.location.reload();
@@ -174,7 +189,7 @@
     function iniciarJuego() {
       // Restablecer estado del juego
       x = canvas.width / 2;
-      y = canvas.height - 30;
+      y = paddleY - ballRadius - 1; // justo encima de la paleta
       dx = 2 * 1.2; // 2.4
       dy = -2 * 1.2; // -2.4
       score = 0;
@@ -198,13 +213,6 @@
     }
 
 
-    function drawScore() {
-      ctx.font = "16px Arial";
-      ctx.fillStyle = "#fff";
-      ctx.fillText("Puntaje: " + score, 8, 20);
-    }
-
-
     function draw() {
       if (!juegoActivo) return;
 
@@ -212,23 +220,38 @@
       drawBricks();
       drawBall();
       drawPaddle();
-      drawScore();
       collisionDetection();
 
       if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-        dx = -dx;
-      }
-      if (y + dy > canvas.height - ballRadius - 20) {
-        dy = -dy;
-      } else if (y + dy > canvas.height - ballRadius) {
-        if (x > paddleX && x < paddleX + paddleWidth) {
-          dy = -dy;
-        } else {
-          juegoActivo = false; // 🛑 Detener el juego
-          alert("💀 Game Over");
-          return; // No seguir animando
+          dx = -dx;
         }
-      }
+
+        // Rebote superior
+        if (y + dy < ballRadius) {
+          dy = -dy;
+        }
+
+        // Rebote con la paleta
+        if (
+          y + ballRadius >= paddleY &&
+          y + ballRadius <= paddleY + paddleHeight &&
+          x >= paddleX &&
+          x <= paddleX + paddleWidth
+        ) {
+          dy = -dy;
+        }
+
+        // Fin del juego solo si la pelota cruza el canvas
+        else if (y + ballRadius > canvas.height) {
+          juegoActivo = false;
+          alert("💀 Game Over");
+          return;
+        }
+
+
+
+
+
 
       x += dx;
       y += dy;
